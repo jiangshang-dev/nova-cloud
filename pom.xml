@@ -130,6 +130,11 @@
             </dependency>
             <dependency>
                 <groupId>com.nova</groupId>
+                <artifactId>nova-datasource-spring-boot-starter</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
                 <artifactId>nova-mybatis-spring-boot-starter</artifactId>
                 <version>${nova.version}</version>
             </dependency>

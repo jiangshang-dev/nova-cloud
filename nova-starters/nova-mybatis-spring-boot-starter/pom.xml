@@ -10,12 +10,16 @@
     </parent>
 
     <artifactId>nova-mybatis-spring-boot-starter</artifactId>
-    <description>MyBatis-Plus Starter：分页插件自动装配，业务引入本模块即可</description>
+    <description>MyBatis-Plus Starter：分页等能力；建议与 nova-datasource-spring-boot-starter 一起引入</description>
 
     <dependencies>
         <dependency>
             <groupId>com.nova</groupId>
             <artifactId>nova-common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nova</groupId>
+            <artifactId>nova-datasource-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
