@@ -1,0 +1,40 @@
+# =========================================================
+# nova-monitor 专属（可复制到 Nacos：DataId = nova-monitor-dev.yml）
+# =========================================================
+server:
+  port: 9111
+
+spring:
+  boot:
+    admin:
+      ui:
+        title: NovaCloud 监控中心
+      client:
+        instance:
+          metadata:
+            tags:
+              environment: local
+  security:
+    user:
+      name: ${MONITOR_USER:admin}
+      password: ${MONITOR_PASSWORD:admin123}
+  cloud:
+    nacos:
+      discovery:
+        metadata:
+          user.name: ${spring.security.user.name}
+          user.password: ${spring.security.user.password}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.nova: info
+    de.codecentric.boot.admin: info

@@ -1,0 +1,46 @@
+server:
+  port: 8718
+  servlet:
+    session:
+      cookie:
+        name: sentinel_dashboard_cookie
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: nova-sentinel
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+auth:
+  filter:
+    exclude-url-suffixes: htm,html,js,css,map,ico,ttf,woff,png
+    exclude-urls: /,/auth/login,/auth/logout,/registry/machine,/version
+
+logging:
+  level:
+    org.springframework.web: INFO
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  file:
+    name: ${user.home}/logs/csp/sentinel-dashboard.log
+
+# Nacos 规则持久化（与业务服务同一配置中心）
+nacos:
+  server:
+    ip: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+    namespace: ${NACOS_NAMESPACE:bd3454be-a672-433f-a1da-97f1d0ce8038}
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+    group-id: SENTINEL_GROUP
+
+sentinel:
+  dashboard:
+    version: 1.8.3
+    auth:
+      username: ${SENTINEL_USER:sentinel}
+      password: ${SENTINEL_PASSWORD:sentinel}
