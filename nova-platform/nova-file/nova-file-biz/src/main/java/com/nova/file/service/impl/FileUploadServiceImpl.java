@@ -1,6 +1,7 @@
 package com.nova.file.service.impl;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -65,27 +66,19 @@ public class FileUploadServiceImpl implements FileUploadService {
                 : request.getChunkSize();
         int chunkTotal = (int) Math.ceil(request.getFileSize() * 1.0 / chunkSize);
 
-        FileInfo uploading = fileInfoMapper.selectOne(new LambdaQueryWrapper<FileInfo>()
+        // 放弃同 MD5 下未完成会话，避免历史错误分片（size 异常）污染合并
+        List<FileInfo> uploadingList = fileInfoMapper.selectList(new LambdaQueryWrapper<FileInfo>()
                 .eq(FileInfo::getFileMd5, request.getFileMd5())
-                .eq(FileInfo::getUploadStatus, 0)
-                .orderByDesc(FileInfo::getGmtCreate)
-                .last("LIMIT 1"));
-        if (uploading != null && StrUtil.isNotBlank(uploading.getUploadId())) {
-            List<Integer> uploaded = listUploadedChunkIndexes(uploading.getUploadId());
-            return UploadInitResponse.builder()
-                    .skipUpload(false)
-                    .fileId(uploading.getId())
-                    .uploadId(uploading.getUploadId())
-                    .objectKey(uploading.getObjectKey())
-                    .chunkSize(chunkSize)
-                    .chunkTotal(chunkTotal)
-                    .uploadedChunks(uploaded)
-                    .build();
+                .eq(FileInfo::getUploadStatus, 0));
+        for (FileInfo old : uploadingList) {
+            abandonUploading(old, client);
         }
 
         String suffix = FileUtil.extName(request.getFileName());
         String objectKey = buildObjectKey(suffix, request.getFileMd5());
-        String uploadId = client.initiateMultipart(objectKey, request.getContentType());
+        String providerUploadId = client.initiateMultipart(objectKey, request.getContentType());
+        // 前端/库表用短会话 ID，避免 S3 uploadId 超长截断或特殊字符导致“上传会话不存在”
+        String uploadId = IdUtil.simpleUUID();
 
         FileInfo info = new FileInfo();
         info.setId(IdGeneratorUtil.nextId());
@@ -101,8 +94,10 @@ public class FileUploadServiceImpl implements FileUploadService {
         info.setBizType(request.getBizType());
         info.setBizId(request.getBizId());
         info.setUploadId(uploadId);
+        info.setProviderUploadId(providerUploadId);
         info.setUploadStatus(0);
         info.setIsDeleted(0);
+        info.setRemark("chunkSize=" + chunkSize);
         fileInfoMapper.insert(info);
 
         return UploadInitResponse.builder()
@@ -124,20 +119,35 @@ public class FileUploadServiceImpl implements FileUploadService {
         AssertUtil.notNull(file, "分片文件不能为空");
 
         FileInfo info = requireUploading(uploadId);
+        byte[] bytes;
+        try {
+            // 不要用 MultipartFile.getSize()：Blob 分片场景下可能为 0，导致合并校验失败
+            bytes = file.getBytes();
+        } catch (Exception e) {
+            throw new IllegalStateException("读取分片失败: " + e.getMessage(), e);
+        }
+        long actualSize = bytes.length;
+        AssertUtil.isTrue(actualSize > 0, "分片内容为空");
+        long configuredChunkSize = parseChunkSize(info.getRemark());
+        long expectedSize = expectedChunkBytes(info.getFileSize(), configuredChunkSize, chunkIndex);
+        AssertUtil.isTrue(actualSize == expectedSize,
+                "分片大小不正确: index=" + chunkIndex + ", actual=" + actualSize + ", expected=" + expectedSize);
+
         FileChunk exists = fileChunkMapper.selectOne(new LambdaQueryWrapper<FileChunk>()
                 .eq(FileChunk::getUploadId, uploadId)
                 .eq(FileChunk::getChunkIndex, chunkIndex)
                 .eq(FileChunk::getStatus, 1)
                 .last("LIMIT 1"));
-        if (exists != null) {
+        if (exists != null && expectedSize == (exists.getChunkSize() == null ? -1L : exists.getChunkSize())) {
             return;
         }
 
         int partNumber = chunkIndex + 1;
+        String storageUploadId = resolveProviderUploadId(info);
         String etag;
-        try (InputStream in = file.getInputStream()) {
+        try (InputStream in = new java.io.ByteArrayInputStream(bytes)) {
             etag = activeStorageHolder.requireClient()
-                    .uploadPart(info.getObjectKey(), uploadId, partNumber, in, file.getSize());
+                    .uploadPart(info.getObjectKey(), storageUploadId, partNumber, in, actualSize);
         } catch (Exception e) {
             throw new IllegalStateException("分片上传失败: " + e.getMessage(), e);
         }
@@ -154,13 +164,13 @@ public class FileUploadServiceImpl implements FileUploadService {
             chunk.setFileMd5(info.getFileMd5());
             chunk.setChunkIndex(chunkIndex);
             chunk.setObjectKey(info.getObjectKey());
-            chunk.setChunkSize(file.getSize());
+            chunk.setChunkSize(actualSize);
             chunk.setChunkMd5(chunkMd5);
             chunk.setEtag(etag);
             chunk.setStatus(1);
             fileChunkMapper.insert(chunk);
         } else {
-            chunk.setChunkSize(file.getSize());
+            chunk.setChunkSize(actualSize);
             chunk.setChunkMd5(chunkMd5);
             chunk.setEtag(etag);
             chunk.setStatus(1);
@@ -172,21 +182,40 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Transactional(rollbackFor = Exception.class)
     public FileInfo merge(String uploadId) {
         FileInfo info = requireUploading(uploadId);
-        List<FileChunk> chunks = fileChunkMapper.selectList(new LambdaQueryWrapper<FileChunk>()
+        long configuredChunkSize = parseChunkSize(info.getRemark());
+        int expectedTotal = (int) Math.ceil(info.getFileSize() * 1.0 / configuredChunkSize);
+
+        List<FileChunk> rawChunks = fileChunkMapper.selectList(new LambdaQueryWrapper<FileChunk>()
                 .eq(FileChunk::getUploadId, uploadId)
                 .eq(FileChunk::getStatus, 1)
-                .orderByAsc(FileChunk::getChunkIndex));
+                .orderByAsc(FileChunk::getChunkIndex)
+                .orderByDesc(FileChunk::getId));
+        // 按 chunkIndex 去重，保留最新一条
+        java.util.Map<Integer, FileChunk> unique = new java.util.LinkedHashMap<>();
+        for (FileChunk chunk : rawChunks) {
+            unique.putIfAbsent(chunk.getChunkIndex(), chunk);
+        }
+        List<FileChunk> chunks = new java.util.ArrayList<>(unique.values());
+        chunks.sort(java.util.Comparator.comparingInt(FileChunk::getChunkIndex));
         AssertUtil.isTrue(!chunks.isEmpty(), "没有任何已上传分片");
+        AssertUtil.isTrue(chunks.size() == expectedTotal,
+                "分片数量不一致: actual=" + chunks.size() + ", expected=" + expectedTotal);
 
-        long sum = chunks.stream().mapToLong(c -> c.getChunkSize() == null ? 0L : c.getChunkSize()).sum();
-        AssertUtil.isTrue(sum == info.getFileSize(), "分片总大小与文件大小不一致");
+        for (int i = 0; i < chunks.size(); i++) {
+            FileChunk chunk = chunks.get(i);
+            AssertUtil.isTrue(Integer.valueOf(i).equals(chunk.getChunkIndex()),
+                    "分片不连续，缺少序号: " + i);
+            long expectedSize = expectedChunkBytes(info.getFileSize(), configuredChunkSize, i);
+            AssertUtil.isTrue(chunk.getChunkSize() != null && chunk.getChunkSize() == expectedSize,
+                    "分片大小不正确: index=" + i + ", actual=" + chunk.getChunkSize() + ", expected=" + expectedSize);
+        }
 
         List<PartETagInfo> parts = chunks.stream()
                 .map(c -> new PartETagInfo(c.getChunkIndex() + 1, c.getEtag()))
                 .collect(Collectors.toList());
 
         FileStorageClient client = activeStorageHolder.requireClient();
-        client.completeMultipart(info.getObjectKey(), uploadId, parts);
+        client.completeMultipart(info.getObjectKey(), resolveProviderUploadId(info), parts);
 
         info.setUploadStatus(1);
         info.setAccessUrl(client.getAccessUrl(info.getObjectKey()));
@@ -295,6 +324,43 @@ public class FileUploadServiceImpl implements FileUploadService {
         return count != null && count > 0;
     }
 
+    private void abandonUploading(FileInfo old, FileStorageClient client) {
+        if (old == null) {
+            return;
+        }
+        old.setUploadStatus(2);
+        fileInfoMapper.updateById(old);
+        if (StrUtil.isNotBlank(old.getUploadId())) {
+            fileChunkMapper.delete(new LambdaQueryWrapper<FileChunk>()
+                    .eq(FileChunk::getUploadId, old.getUploadId()));
+        }
+        try {
+            if (StrUtil.isNotBlank(old.getObjectKey()) && StrUtil.isNotBlank(resolveProviderUploadId(old))) {
+                client.abortMultipart(old.getObjectKey(), resolveProviderUploadId(old));
+            }
+        } catch (Exception ignored) {
+            // 尽力中止对象存储 multipart
+        }
+    }
+
+    private static long parseChunkSize(String remark) {
+        if (StrUtil.isBlank(remark) || !remark.startsWith("chunkSize=")) {
+            return DEFAULT_CHUNK_SIZE;
+        }
+        try {
+            long size = Long.parseLong(remark.substring("chunkSize=".length()).trim());
+            return size > 0 ? size : DEFAULT_CHUNK_SIZE;
+        } catch (Exception e) {
+            return DEFAULT_CHUNK_SIZE;
+        }
+    }
+
+    private static long expectedChunkBytes(long fileSize, long chunkSize, int chunkIndex) {
+        long start = (long) chunkIndex * chunkSize;
+        AssertUtil.isTrue(start < fileSize, "chunkIndex 超出文件范围: " + chunkIndex);
+        return Math.min(chunkSize, fileSize - start);
+    }
+
     private FileInfo requireUploading(String uploadId) {
         FileInfo info = fileInfoMapper.selectOne(new LambdaQueryWrapper<FileInfo>()
                 .eq(FileInfo::getUploadId, uploadId)
@@ -304,10 +370,16 @@ public class FileUploadServiceImpl implements FileUploadService {
         return info;
     }
 
+    /** 调用对象存储时使用 providerUploadId；兼容旧数据（仅有 uploadId） */
+    private static String resolveProviderUploadId(FileInfo info) {
+        return StrUtil.blankToDefault(info.getProviderUploadId(), info.getUploadId());
+    }
+
     private List<Integer> listUploadedChunkIndexes(String uploadId) {
         return fileChunkMapper.selectList(new LambdaQueryWrapper<FileChunk>()
                         .eq(FileChunk::getUploadId, uploadId)
                         .eq(FileChunk::getStatus, 1)
+                        .gt(FileChunk::getChunkSize, 0)
                         .orderByAsc(FileChunk::getChunkIndex))
                 .stream()
                 .map(FileChunk::getChunkIndex)

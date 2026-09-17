@@ -30,7 +30,10 @@ public class FileInfo {
     private String accessUrl;
     private String bizType;
     private String bizId;
+    /** 业务侧分片会话 ID（短 UUID，给前端用） */
     private String uploadId;
+    /** 对象存储 multipart uploadId（S3/RustFS 可能很长） */
+    private String providerUploadId;
     private Integer uploadStatus;
     @JsonSerialize(using = ToStringSerializer.class)
     private Long createBy;

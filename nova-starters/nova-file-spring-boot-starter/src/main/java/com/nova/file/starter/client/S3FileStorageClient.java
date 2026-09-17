@@ -27,6 +27,7 @@ import software.amazon.awssdk.services.s3.model.Part;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -82,7 +83,8 @@ public class S3FileStorageClient implements FileStorageClient {
         if (StrUtil.isNotBlank(contentType)) {
             builder.contentType(contentType);
         }
-        s3Client.putObject(builder.build(), RequestBody.fromInputStream(in, size));
+        // MultipartFile 流不支持 mark/reset，SDK 重试时会报 already read once
+        s3Client.putObject(builder.build(), toRequestBody(in, size));
     }
 
     @Override
@@ -154,7 +156,7 @@ public class S3FileStorageClient implements FileStorageClient {
                 .uploadId(uploadId)
                 .partNumber(partNumber)
                 .build();
-        return s3Client.uploadPart(request, RequestBody.fromInputStream(in, size)).eTag();
+        return s3Client.uploadPart(request, toRequestBody(in, size)).eTag();
     }
 
     @Override
@@ -247,6 +249,15 @@ public class S3FileStorageClient implements FileStorageClient {
             return "oss-cn-beijing";
         }
         return "us-east-1";
+    }
+
+    private static RequestBody toRequestBody(InputStream in, long ignoredSize) {
+        try {
+            // MultipartFile/Servlet 流通常不支持 mark/reset；先读入内存再交给 AWS SDK，避免重试时报 already read once
+            return RequestBody.fromBytes(in.readAllBytes());
+        } catch (IOException e) {
+            throw new IllegalStateException("读取上传流失败: " + e.getMessage(), e);
+        }
     }
 
     private static String ensureScheme(String endpoint) {
