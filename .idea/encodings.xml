@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/nova-auth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-auth/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-ai/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-ai/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-crypto/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-crypto/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-log/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-log/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-mybatis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-mybatis/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-redis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-redis/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-security/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-security/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-file/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-file/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-job/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-job/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-monitor/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-monitor/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-nacos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-nacos/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-search/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-search/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/nova-ai-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/nova-ai-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/nova-file-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/nova-file-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/sentinel-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/sentinel-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/skywalking-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/skywalking-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-system/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
