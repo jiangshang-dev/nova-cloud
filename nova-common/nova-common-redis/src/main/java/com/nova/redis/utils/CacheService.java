@@ -1,7 +1,6 @@
 package com.nova.redis.utils;
 
 import lombok.Getter;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.core.*;
@@ -10,13 +9,15 @@ import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Getter
 @Component
-public class CacheService extends CachingConfigurerSupport {
+@ConditionalOnBean(StringRedisTemplate.class)
+public class CacheService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -1435,7 +1436,7 @@ public class CacheService extends CachingConfigurerSupport {
             if (result != null && result)
                 return token;
         } finally {
-            RedisConnectionUtils.releaseConnection(conn, factory,false);
+            RedisConnectionUtils.releaseConnection(conn, factory);
         }
         return null;
     }

@@ -10,11 +10,21 @@
     </parent>
 
     <artifactId>nova-ai-spring-boot-starter</artifactId>
+    <description>AgentScope / AI 自动装配 Starter</description>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.nova</groupId>
+            <artifactId>nova-common-ai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 </project>

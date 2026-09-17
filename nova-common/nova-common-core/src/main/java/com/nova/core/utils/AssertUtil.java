@@ -1,16 +1,17 @@
 package com.nova.core.utils;
 
 import cn.hutool.core.util.StrUtil;
-import com.ruiyada.common.core.exception.ServiceException;
-import com.ruiyada.common.domain.base.IBaseEnum;
-
+import com.nova.core.enums.IBaseEnum;
+import com.nova.core.exception.ServiceException;
 
 /**
- * 流程引擎断言工具
- *
- * @author java开发组
+ * 断言工具。
  */
 public final class AssertUtil {
+
+    private AssertUtil() {
+    }
+
     public static void isTrue(boolean expression, IBaseEnum<Integer> base, Object... params) {
         if (!expression) {
             throw new ServiceException(base, params);
