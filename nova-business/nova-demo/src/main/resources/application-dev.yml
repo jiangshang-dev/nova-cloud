@@ -10,6 +10,25 @@ server:
   port: 8090
 
 spring:
+  # ---------- RabbitMQ 连接（标准 Spring Boot 配置）----------
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    # 发布确认（可选）
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        # 与 Nova MQ 手动 Ack 一致；也可交给 starter 容器工厂覆盖
+        acknowledge-mode: manual
+        prefetch: 1
+        concurrency: 1
+        max-concurrency: 1
   data:
     redis:
       host: 127.0.0.1
@@ -22,6 +41,19 @@ nova:
       secret: NovaCloudJwtSecretKeyChangeMePlease32
       expire-seconds: 7200
       issuer: nova-cloud
+  # ---------- Nova MQ 扩展（nova-mq-spring-boot-starter）----------
+  mq:
+    # 是否启用自动装配（false 则不注册 RabbitMqClient）
+    enabled: true
+    # 即时消息直连交换机
+    direct-exchange: nova.direct.exchange
+    # 延迟交换机（需安装 rabbitmq_delayed_message_exchange 插件）
+    delay-exchange: nova.delayed.exchange
+    # 消费并发
+    concurrent-consumers: 1
+    max-concurrent-consumers: 1
+    prefetch: 1
+    default-requeue-rejected: true
 
 springdoc:
   swagger-ui:
@@ -36,3 +68,5 @@ management:
 logging:
   level:
     com.nova: info
+    com.nova.mq: debug
+    com.nova.demo.mq: debug

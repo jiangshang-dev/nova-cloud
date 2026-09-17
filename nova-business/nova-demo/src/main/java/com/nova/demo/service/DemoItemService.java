@@ -3,6 +3,11 @@ package com.nova.demo.service;
 import com.nova.core.utils.AssertUtil;
 import com.nova.core.utils.IdGeneratorUtil;
 import com.nova.demo.domain.DemoItem;
+import com.nova.demo.constants.DemoMqConstants;
+import com.nova.mq.client.RabbitMqClient;
+import com.nova.mq.model.BaseMap;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,8 +18,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+/**
+ * DemoItem 业务示例（内存存储）。
+ * <p>
+ * {@link #create} 中演示通过 {@link RabbitMqClient} 发送 MQ 消息；
+ * 消费端见 {@link com.nova.demo.mq.DemoItemCreateReceiver}。
+ */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class DemoItemService {
+
+    private final RabbitMqClient rabbitMqClient;
 
     private final Map<Long, DemoItem> store = new ConcurrentHashMap<>();
 
@@ -32,6 +47,9 @@ public class DemoItemService {
         return item;
     }
 
+    /**
+     * 新增 DemoItem，并发送创建事件到 MQ（生产示例）。
+     */
     public DemoItem create(DemoItem item) {
         AssertUtil.isNotBlank(item.getTitle(), "title 不能为空");
         long id = IdGeneratorUtil.nextId();
@@ -40,6 +58,18 @@ public class DemoItemService {
         item.setGmtCreate(now);
         item.setGmtModified(now);
         store.put(id, item);
+
+        // 生产示例：即时发送
+        BaseMap payload = new BaseMap()
+                .set("id", item.getId())
+                .set("title", item.getTitle())
+                .set("content", item.getContent())
+                .set("event", "CREATE");
+        rabbitMqClient.sendMessage(DemoMqConstants.DEMO_ITEM_CREATE_QUEUE, payload);
+        log.info("已发送 DemoItem 创建消息, queue={}, id={}", DemoMqConstants.DEMO_ITEM_CREATE_QUEUE, id);
+
+        // TODO: 如需延迟投递，可改为：
+        // rabbitMqClient.sendMessage(DemoMqConstants.DEMO_ITEM_CREATE_QUEUE, payload, 5000);
         return item;
     }
 

@@ -23,3 +23,9 @@ spring:
   config:
     import:
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:application-mq.yml
+      - optional:nacos:application-mysql.yml
+      - optional:nacos:application-dm.yml
+      - optional:nacos:application-pg.yml
+      - optional:nacos:application-redis.yml
+      - optional:nacos:application-security.yml
