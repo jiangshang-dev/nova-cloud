@@ -19,16 +19,13 @@
     <description>NovaCloud：企业级云原生微服务与智能体开发平台</description>
 
     <modules>
-        <module>nova-gateway</module>
-        <module>nova-auth</module>
-        <module>nova-system</module>
         <module>nova-common</module>
+        <module>nova-starters</module>
+        <module>nova-platform</module>
+        <module>nova-business</module>
         <module>nova-search</module>
         <module>nova-monitor</module>
         <module>nova-nacos</module>
-        <module>nova-starters</module>
-        <module>nova-file</module>
-        <module>nova-job</module>
     </modules>
 
     <properties>

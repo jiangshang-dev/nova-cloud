@@ -28,6 +28,10 @@ spring:
           uri: lb://nova-file
           predicates:
             - Path=/file/**
+        - id: nova-demo
+          uri: lb://nova-demo
+          predicates:
+            - Path=/demo/**
 
 nova:
   security:

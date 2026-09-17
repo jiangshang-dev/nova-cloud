@@ -2,11 +2,13 @@
 
 ## 服务端口
 
-| 服务 | 端口 | 说明 |
-|------|------|------|
-| nova-gateway | 8080 | Token 鉴权 + SM3/SM4 开关 |
-| nova-system | 8081 | 用户/角色/菜单 |
-| nova-auth | 9000 | OAuth2 认证中心 + 业务登录 |
+| 服务 | 模块路径 | 端口 | 说明 |
+|------|----------|------|------|
+| nova-gateway | nova-platform/nova-gateway | 8080 | Token 鉴权 + SM3/SM4 开关 |
+| nova-system | nova-platform/nova-system | 8081 | 用户/角色/菜单 |
+| nova-auth | nova-platform/nova-auth | 9000 | OAuth2 认证中心 + 业务登录 |
+| nova-file | nova-platform/nova-file | 8082 | 文件上传 / 存储配置 |
+| nova-demo | nova-business/nova-demo | 8090 | 业务服务示例 |
 
 ## 认证接口（nova-auth）
 

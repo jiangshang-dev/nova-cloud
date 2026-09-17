@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nova</groupId>
+        <artifactId>nova-cloud</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>nova-platform</artifactId>
+    <packaging>pom</packaging>
+    <description>NovaCloud 平台服务：网关 / 认证 / 系统 / 文件 / 任务</description>
+
+    <modules>
+        <module>nova-gateway</module>
+        <module>nova-auth</module>
+        <module>nova-system</module>
+        <module>nova-file</module>
+        <module>nova-job</module>
+    </modules>
+</project>
