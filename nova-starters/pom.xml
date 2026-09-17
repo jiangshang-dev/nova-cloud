@@ -15,10 +15,10 @@
     <description>
         启动器服务
     </description>
+
     <modules>
         <module>nova-file-spring-boot-starter</module>
         <module>sentinel-spring-boot-starter</module>
-        <module>skywalking-spring-boot-starter</module>
         <module>nova-ai-spring-boot-starter</module>
     </modules>
 
