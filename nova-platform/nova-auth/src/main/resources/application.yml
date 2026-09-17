@@ -8,8 +8,8 @@
 spring:
   application:
     name: nova-auth
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+#  profiles:
+#    active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     nacos:
       # 免密保持注释

@@ -1,0 +1,19 @@
+# =========================================================
+# 达梦 DM8 —— spring.datasource.dynamic
+# 激活：SPRING_PROFILES_ACTIVE=dev,dm
+# =========================================================
+nova:
+  datasource:
+    db-type: dameng
+
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          url: jdbc:dm://${DM_HOST:127.0.0.1}:${DM_PORT:5236}?schema=${DM_SCHEMA:NOVA_CLOUD}
+          username: ${DM_USERNAME:SYSDBA}
+          password: ${DM_PASSWORD:SYSDBA}
+          driver-class-name: dm.jdbc.driver.DmDriver

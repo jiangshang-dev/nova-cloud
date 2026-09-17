@@ -1,0 +1,19 @@
+# =========================================================
+# PostgreSQL —— spring.datasource.dynamic
+# 激活：SPRING_PROFILES_ACTIVE=dev,pg
+# =========================================================
+nova:
+  datasource:
+    db-type: postgresql
+
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          url: jdbc:postgresql://${PG_HOST:127.0.0.1}:${PG_PORT:5432}/${PG_DB:nova_cloud}
+          username: ${PG_USERNAME:postgres}
+          password: ${PG_PASSWORD:postgres}
+          driver-class-name: org.postgresql.Driver

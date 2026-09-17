@@ -34,6 +34,39 @@ public class AiModelConfigService {
                 .orderByAsc(AiModel::getId));
     }
 
+    /** 管理端：含停用模型 */
+    public List<AiModel> listAllModels(Long providerId, String modelName) {
+        return modelMapper.selectList(new LambdaQueryWrapper<AiModel>()
+                .eq(providerId != null, AiModel::getProviderId, providerId)
+                .like(StrUtil.isNotBlank(modelName), AiModel::getModelName, modelName)
+                .orderByDesc(AiModel::getId));
+    }
+
+    public AiModelProvider getProvider(Long id) {
+        AiModelProvider provider = providerMapper.selectById(id);
+        AssertUtil.notNull(provider, "提供商不存在");
+        return provider;
+    }
+
+    public AiModel getModel(Long id) {
+        AiModel model = modelMapper.selectById(id);
+        AssertUtil.notNull(model, "模型不存在");
+        return model;
+    }
+
+    public void deleteProvider(Long id) {
+        getProvider(id);
+        Long count = modelMapper.selectCount(new LambdaQueryWrapper<AiModel>()
+                .eq(AiModel::getProviderId, id));
+        AssertUtil.isTrue(count == null || count == 0, "该提供商下仍有模型，无法删除");
+        providerMapper.deleteById(id);
+    }
+
+    public void deleteModel(Long id) {
+        getModel(id);
+        modelMapper.deleteById(id);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public Long saveProvider(AiModelProvider provider) {
         if (provider.getId() == null) {
