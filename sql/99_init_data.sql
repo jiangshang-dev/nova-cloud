@@ -31,7 +31,7 @@ INSERT INTO `sys_user`
 (`id`, `tenant_id`, `dept_id`, `username`, `password`, `nickname`, `real_name`, `email`, `user_type`, `status`, `is_deleted`, `remark`)
 VALUES
 (1, 1, 100, 'admin',
- '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE/sLtTQzR6.6.',
+ '$2a$10$jzJqz6b8fJ.4GHPlybfgx.J3p1/7PsbBwA71JFoi08buJnOD5OXMu',
  '超级管理员', '管理员', 'admin@nova.local', 9, 1, 0, '默认超管，请尽快修改密码');
 
 -- 角色
@@ -53,9 +53,10 @@ VALUES
 (2, 1, '用户管理', 'C', 'user', 'system/user/index', 'system:user:list', 'user', 1, 1, 1, 0, 0, 0),
 (3, 1, '角色管理', 'C', 'role', 'system/role/index', 'system:role:list', 'peoples', 2, 1, 1, 0, 0, 0),
 (4, 1, '菜单管理', 'C', 'menu', 'system/menu/index', 'system:menu:list', 'tree-table', 3, 1, 1, 0, 0, 0),
-(5, 1, '部门管理', 'C', 'dept', 'system/dept/index', 'system:dept:list', 'tree', 4, 1, 1, 0, 0, 0),
+(5, 1, '部门管理', 'C', 'dept', 'system/depart/index', 'system:dept:list', 'tree', 4, 1, 1, 0, 0, 0),
 (6, 1, '字典管理', 'C', 'dict', 'system/dict/index', 'system:dict:list', 'dict', 5, 1, 1, 0, 0, 0),
-(7, 1, '参数设置', 'C', 'config', 'system/config/index', 'system:config:list', 'edit', 6, 1, 1, 0, 0, 0),
+(7, 1, '参数设置', 'C', 'config', 'system/config/index', 'system:config:list', 'edit', 6, 0, 1, 0, 0, 0),
+(19, 1, '系统日志', 'C', 'log', 'monitor/log/index', 'monitor:log:list', 'file-search', 7, 1, 1, 0, 0, 0),
 (8, 0, 'AI平台', 'M', '/ai', NULL, NULL, 'robot', 2, 1, 1, 0, 0, 0),
 (9, 8, '模型管理', 'C', 'model', 'ai/model/index', 'ai:model:list', 'component', 1, 1, 1, 0, 0, 0),
 (10, 8, 'Agent管理', 'C', 'agent', 'ai/agent/index', 'ai:agent:list', 'guide', 2, 1, 1, 0, 0, 0),
@@ -65,8 +66,8 @@ VALUES
 (14, 13, '文件管理', 'C', 'list', 'file/list/index', 'file:info:list', 'list', 1, 1, 1, 0, 0, 0),
 (18, 13, '存储配置', 'C', 'storage', 'file/storage/index', 'file:storage:list', 'server', 2, 1, 1, 0, 0, 0),
 (15, 0, '监控中心', 'M', '/monitor', NULL, NULL, 'monitor', 4, 1, 1, 0, 0, 0),
-(16, 15, '操作日志', 'C', 'operlog', 'monitor/operlog/index', 'monitor:operlog:list', 'form', 1, 1, 1, 0, 0, 0),
-(17, 15, '登录日志', 'C', 'loginlog', 'monitor/loginlog/index', 'monitor:loginlog:list', 'logininfor', 2, 1, 1, 0, 0, 0);
+(16, 15, '操作日志', 'C', 'operlog', 'monitor/log/index', 'monitor:operlog:list', 'form', 1, 1, 1, 0, 0, 0),
+(17, 15, '登录日志', 'C', 'loginlog', 'monitor/log/index', 'monitor:loginlog:list', 'logininfor', 2, 1, 1, 0, 0, 0);
 
 INSERT INTO `sys_role_menu` (`id`, `role_id`, `menu_id`)
 SELECT `id`, 1, `id` FROM `sys_menu`;
@@ -136,7 +137,7 @@ INSERT INTO `auth_client`
  `redirect_uris`, `scopes`, `is_require_consent`, `access_token_ttl`, `refresh_token_ttl`, `status`, `is_deleted`, `remark`)
 VALUES
 (1, 0, 'nova-web',
- '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE/sLtTQzR6.6.',
+ '$2a$10$jzJqz6b8fJ.4GHPlybfgx.J3p1/7PsbBwA71JFoi08buJnOD5OXMu',
  'NovaCloud Web',
  'authorization_code,refresh_token,client_credentials',
  'http://127.0.0.1:5173/callback',

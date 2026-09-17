@@ -1,5 +1,6 @@
 package com.nova.demo.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.nova.core.utils.AssertUtil;
 import com.nova.core.utils.IdGeneratorUtil;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@DS("sharding-db")
 @Service
 @RequiredArgsConstructor
 public class DemoOrderServiceImpl implements DemoOrderService {

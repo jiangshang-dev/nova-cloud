@@ -10,8 +10,10 @@ import com.nova.security.properties.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +57,26 @@ public class AuthLoginService {
         return buildTokenResponse(user);
     }
 
+    public Map<String, Object> currentUserInfo(String token) {
+        if (!StringUtils.hasText(token)) {
+            throw new ServiceException("未登录或令牌无效");
+        }
+        LoginUser loginUser;
+        try {
+            loginUser = jwtTokenProvider.parseToken(token);
+        } catch (Exception ex) {
+            throw new ServiceException("未登录或令牌无效");
+        }
+        SysUser user = sysUserMapper.selectById(loginUser.getUserId());
+        if (user == null) {
+            throw new ServiceException("用户不存在");
+        }
+        Map<String, Object> result = new HashMap<>(4);
+        result.put("userInfo", buildFrontendUserInfo(user, loginUser.getAuthorities()));
+        result.put("sysAllDictItems", Map.of());
+        return result;
+    }
+
     private Map<String, Object> buildTokenResponse(SysUser user) {
         List<String> permissions = sysUserMapper.selectPermissionsByUserId(user.getId());
         LoginUser loginUser = LoginUser.builder()
@@ -64,8 +86,13 @@ public class AuthLoginService {
                 .authorities(permissions)
                 .build();
         String accessToken = jwtTokenProvider.createToken(loginUser);
+        Map<String, Object> userInfo = buildFrontendUserInfo(user, permissions);
 
-        Map<String, Object> result = new HashMap<>(8);
+        Map<String, Object> result = new LinkedHashMap<>(12);
+        // 前端 Jeecg 风格字段
+        result.put("token", accessToken);
+        result.put("userInfo", userInfo);
+        // OAuth2 / 标准字段
         result.put("access_token", accessToken);
         result.put("token_type", "Bearer");
         result.put("expires_in", jwtProperties.getExpireSeconds());
@@ -74,5 +101,20 @@ public class AuthLoginService {
         result.put("tenant_id", user.getTenantId());
         result.put("authorities", permissions);
         return result;
+    }
+
+    private Map<String, Object> buildFrontendUserInfo(SysUser user, List<String> permissions) {
+        Map<String, Object> userInfo = new LinkedHashMap<>(12);
+        userInfo.put("id", user.getId());
+        userInfo.put("userId", user.getId());
+        userInfo.put("username", user.getUsername());
+        userInfo.put("realname", StringUtils.hasText(user.getRealName()) ? user.getRealName() : user.getNickname());
+        userInfo.put("avatar", user.getAvatar() == null ? "" : user.getAvatar());
+        userInfo.put("loginTenantId", user.getTenantId());
+        userInfo.put("tenantid", user.getTenantId());
+        userInfo.put("roles", permissions == null ? List.of() : permissions.stream()
+                .map(code -> Map.of("roleName", code, "value", code))
+                .toList());
+        return userInfo;
     }
 }

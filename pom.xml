@@ -42,6 +42,8 @@
         <!-- ORM / Cache / Utils -->
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <shardingsphere.version>5.5.0</shardingsphere.version>
+        <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
+        <druid.version>1.2.24</druid.version>
         <hutool.version>5.8.36</hutool.version>
         <redisson.version>3.45.1</redisson.version>
         <!-- API Docs -->
@@ -180,11 +182,22 @@
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-            <!-- ShardingSphere-JDBC -->
+            <!-- ShardingSphere JDBC（可选：dynamic 里挂 sharding-db） -->
             <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc</artifactId>
                 <version>${shardingsphere.version}</version>
+            </dependency>
+            <!-- 动态数据源（对齐 Jeecg：spring.datasource.dynamic） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+                <version>${dynamic-datasource.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid.version}</version>
             </dependency>
 
             <!-- Hutool -->

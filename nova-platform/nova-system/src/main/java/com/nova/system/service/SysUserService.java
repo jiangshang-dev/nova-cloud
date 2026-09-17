@@ -1,16 +1,22 @@
 package com.nova.system.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nova.core.exception.ServiceException;
+import com.nova.core.utils.IdGeneratorUtil;
 import com.nova.system.domain.entity.SysMenu;
 import com.nova.system.domain.entity.SysRole;
 import com.nova.system.domain.entity.SysUser;
+import com.nova.system.domain.entity.SysUserRole;
 import com.nova.system.mapper.SysMenuMapper;
 import com.nova.system.mapper.SysRoleMapper;
 import com.nova.system.mapper.SysUserMapper;
+import com.nova.system.mapper.SysUserRoleMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -21,15 +27,21 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SysUserService {
 
+    private static final String DEFAULT_PASSWORD = "admin123";
+
     private final SysUserMapper sysUserMapper;
     private final SysRoleMapper sysRoleMapper;
     private final SysMenuMapper sysMenuMapper;
+    private final SysUserRoleMapper sysUserRoleMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public Page<SysUser> page(long current, long size, String username) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.hasText(username), SysUser::getUsername, username)
                 .orderByDesc(SysUser::getId);
-        return sysUserMapper.selectPage(new Page<>(current, size), wrapper);
+        Page<SysUser> page = sysUserMapper.selectPage(new Page<>(current, size), wrapper);
+        page.getRecords().forEach(u -> u.setPassword(null));
+        return page;
     }
 
     public SysUser getById(Long id) {
@@ -54,7 +66,21 @@ public class SysUserService {
         return result;
     }
 
-    public void create(SysUser user) {
+    public Long create(SysUser user) {
+        if (user.getTenantId() == null) {
+            user.setTenantId(1L);
+        }
+        if (user.getStatus() == null) {
+            user.setStatus(1);
+        }
+        if (user.getId() == null) {
+            user.setId(IdGeneratorUtil.nextId());
+        }
+        if (!StringUtils.hasText(user.getPassword())) {
+            user.setPassword(DEFAULT_PASSWORD);
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         Long count = sysUserMapper.selectCount(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getTenantId, user.getTenantId())
                 .eq(SysUser::getUsername, user.getUsername()));
@@ -62,14 +88,35 @@ public class SysUserService {
             throw new ServiceException("用户名已存在");
         }
         sysUserMapper.insert(user);
+        return user.getId();
     }
 
     public void update(SysUser user) {
+        if (user.getId() == null) {
+            throw new ServiceException("用户ID不能为空");
+        }
+        getById(user.getId());
+        if (!StringUtils.hasText(user.getPassword())) {
+            user.setPassword(null);
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         sysUserMapper.updateById(user);
+    }
+
+    public void updatePassword(Long id, String password) {
+        if (!StringUtils.hasText(password)) {
+            throw new ServiceException("密码不能为空");
+        }
+        getById(id);
+        sysUserMapper.update(null, new LambdaUpdateWrapper<SysUser>()
+                .eq(SysUser::getId, id)
+                .set(SysUser::getPassword, passwordEncoder.encode(password)));
     }
 
     public void delete(Long id) {
         sysUserMapper.deleteById(id);
+        sysUserRoleMapper.deleteByUserId(id);
     }
 
     public List<SysRole> listRoles() {
@@ -78,9 +125,24 @@ public class SysUserService {
                 .orderByAsc(SysRole::getSort));
     }
 
-    public List<SysMenu> listMenus() {
-        return sysMenuMapper.selectList(new LambdaQueryWrapper<SysMenu>()
-                .eq(SysMenu::getStatus, 1)
-                .orderByAsc(SysMenu::getSort));
+    public List<Long> getRoleIds(Long userId) {
+        getById(userId);
+        return sysUserRoleMapper.selectRoleIdsByUserId(userId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void replaceRoles(Long userId, List<Long> roleIds) {
+        getById(userId);
+        sysUserRoleMapper.deleteByUserId(userId);
+        if (roleIds == null || roleIds.isEmpty()) {
+            return;
+        }
+        for (Long roleId : roleIds) {
+            SysUserRole ur = new SysUserRole();
+            ur.setId(IdGeneratorUtil.nextId());
+            ur.setUserId(userId);
+            ur.setRoleId(roleId);
+            sysUserRoleMapper.insert(ur);
+        }
     }
 }

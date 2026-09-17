@@ -1,0 +1,27 @@
+# ShardingSphere 官方 YAML（demo 分表示例）
+# 启用方式：application-mysql.yml 中取消注释 sharding-db，并 @DS("sharding-db")
+dataSources:
+  master:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://127.0.0.1:3306/nova_cloud?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+
+rules:
+  - !SHARDING
+    tables:
+      demo_order:
+        actualDataNodes: master.demo_order_$->{0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: user_id
+            shardingAlgorithmName: demo-order-inline
+    shardingAlgorithms:
+      demo-order-inline:
+        type: INLINE
+        props:
+          algorithm-expression: demo_order_$->{user_id % 2}
+
+props:
+  sql-show: true

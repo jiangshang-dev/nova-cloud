@@ -1,18 +1,19 @@
 # =========================================================
-# Oracle
-# 复制到 Nacos：DataId = application-oracle.yml
+# Oracle —— spring.datasource.dynamic
 # 激活：SPRING_PROFILES_ACTIVE=dev,oracle
 # =========================================================
 nova:
   datasource:
     db-type: oracle
-    mode: single
 
 spring:
   datasource:
-    url: jdbc:oracle:thin:@//${ORACLE_HOST:127.0.0.1}:${ORACLE_PORT:1521}/${ORACLE_SERVICE:ORCLPDB1}
-    username: ${ORACLE_USERNAME:nova}
-    password: ${ORACLE_PASSWORD:nova}
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 2
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          url: jdbc:oracle:thin:@//${ORACLE_HOST:127.0.0.1}:${ORACLE_PORT:1521}/${ORACLE_SERVICE:ORCLPDB1}
+          username: ${ORACLE_USERNAME:nova}
+          password: ${ORACLE_PASSWORD:nova}
+          driver-class-name: oracle.jdbc.OracleDriver

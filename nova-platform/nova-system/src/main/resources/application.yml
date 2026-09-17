@@ -9,16 +9,11 @@ spring:
   application:
     name: nova-system
   profiles:
-    group:
-      dev:
-        - common
-        - security
-        - redis
-    active: ${SPRING_PROFILES_ACTIVE:dev,mysql}
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     nacos:
-      username: ${NACOS_USERNAME:nacos}
-      password: ${NACOS_PASSWORD:nacos}
+#      username: ${NACOS_USERNAME:nacos}
+#      password: ${NACOS_PASSWORD:nacos}
       server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
       discovery:
         enabled: true
@@ -37,6 +32,6 @@ spring:
       - optional:nacos:application-security.yml
       - optional:nacos:application-redis.yml
       - optional:nacos:application-mysql.yml
-      - optional:nacos:application-pg.yml
-      - optional:nacos:application-oracle.yml
-      - optional:nacos:application-dm.yml
+#      - optional:nacos:application-pg.yml
+#      - optional:nacos:application-oracle.yml
+#      - optional:nacos:application-dm.yml

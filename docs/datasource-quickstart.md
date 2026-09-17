@@ -1,51 +1,50 @@
-# Nova 多数据库兼容
+# Nova 数据源（对齐 JeecgBoot）
 
-## 职责
+使用 `spring.datasource.dynamic` + Druid，**不再**使用自定义 `NovaShardingProperties`。
 
-| 模块 | 职责 |
-|------|------|
-| 业务服务 | 配置 `nova.datasource.db-type` / `mode`、URL、账号；按需引入 JDBC 驱动 |
-| `nova-datasource-spring-boot-starter` | 方言、Driver 缺省填充、DatabaseId、mode→分片推导 |
-| `nova-mybatis-spring-boot-starter` | MyBatis-Plus 分页（跟随方言 DbType） |
-| `nova-shardingsphere-spring-boot-starter` | `mode=sharding*` 时分库分表 |
-
-## 业务引入
-
-```xml
-<dependency>
-  <groupId>com.nova</groupId>
-  <artifactId>nova-datasource-spring-boot-starter</artifactId>
-</dependency>
-<dependency>
-  <groupId>com.nova</groupId>
-  <artifactId>nova-mybatis-spring-boot-starter</artifactId>
-</dependency>
-<!-- 按实际库种引入一种驱动即可 -->
-<dependency>
-  <groupId>com.mysql</groupId>
-  <artifactId>mysql-connector-j</artifactId>
-  <scope>runtime</scope>
-</dependency>
-```
-
-## 配置
+## 单库
 
 ```yaml
-nova:
-  datasource:
-    db-type: mysql          # mysql | postgresql | oracle | dameng
-    mode: single            # single | read-write-splitting | sharding | sharding-read-write
-
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/nova_order
-    username: root
-    password: 123456
-    # driver-class-name 可省略，Starter 按 db-type 自动填充
+    dynamic:
+      primary: master
+      datasource:
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/nova_cloud?...
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
-Profile 切换：`dev,mysql` / `dev,pg` / `dev,oracle` / `dev,dm`。
+## 从库（可选）
 
-## 预留扩展（TODO）
+```yaml
+spring:
+  datasource:
+    dynamic:
+      datasource:
+        master: ...
+        slave:
+          url: jdbc:mysql://127.0.0.1:3307/nova_cloud?...
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
+```
 
-SQL Server、人大金仓、OceanBase、TiDB、GaussDB — 枚举已占位，方言待实现。
+未配置 slave 时全部走 master；需要读从库时使用 `@DS("slave")`。
+
+## 分片（可选，对齐 Jeecg）
+
+```yaml
+spring:
+  datasource:
+    dynamic:
+      datasource:
+        master: ...
+        sharding-db:
+          driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+          url: jdbc:shardingsphere:classpath:sharding.yaml
+```
+
+业务侧 `@DS("sharding-db")`，规则写在 `sharding.yaml`。

@@ -10,5 +10,4 @@ logging:
     com.nova: info
     com.nova.mq: debug
     com.nova.demo.mq: debug
-    com.nova.sharding: debug
     org.apache.shardingsphere: info

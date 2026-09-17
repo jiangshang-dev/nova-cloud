@@ -1948,7 +1948,7 @@ INSERT INTO sys_user
 (id, tenant_id, dept_id, username, password, nickname, real_name, email, user_type, status, is_deleted, remark)
 VALUES
 (1, 1, 100, 'admin',
- '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE/sLtTQzR6.6.',
+ '$2a$10$jzJqz6b8fJ.4GHPlybfgx.J3p1/7PsbBwA71JFoi08buJnOD5OXMu',
  '超级管理员', '管理员', 'admin@nova.local', 9, 1, 0, '默认超管，请尽快修改密码');
 
 -- 角色
@@ -2053,7 +2053,7 @@ INSERT INTO auth_client
  redirect_uris, scopes, is_require_consent, access_token_ttl, refresh_token_ttl, status, is_deleted, remark)
 VALUES
 (1, 0, 'nova-web',
- '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE/sLtTQzR6.6.',
+ '$2a$10$jzJqz6b8fJ.4GHPlybfgx.J3p1/7PsbBwA71JFoi08buJnOD5OXMu',
  'NovaCloud Web',
  'authorization_code,refresh_token,client_credentials',
  'http://127.0.0.1:5173/callback',

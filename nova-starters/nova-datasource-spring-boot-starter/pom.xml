@@ -11,8 +11,8 @@
 
     <artifactId>nova-datasource-spring-boot-starter</artifactId>
     <description>
-        多数据库兼容 Starter：按 nova.datasource.db-type 注入方言 / Driver 缺省 / mode 推导。
-        JDBC 驱动统一放在 nova-shardingsphere-spring-boot-starter，业务服务引入该 Starter 即可。
+        数据源 Starter（对齐 Jeecg）：spring.datasource.dynamic + Druid；方言 / DatabaseId。
+        业务配置 master；可选 slave；分片用 ShardingSphereDriver + sharding.yaml。
     </description>
 
     <dependencies>
@@ -28,9 +28,15 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <optional>true</optional>
         </dependency>
-        <!-- 可选：映射 MyBatis-Plus DbType（分页） -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-core</artifactId>

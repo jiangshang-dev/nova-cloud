@@ -11,7 +11,7 @@
 | `application-common.yml` | MyBatis / Swagger / 监控 |
 | `application-security.yml` | JWT |
 | `application-redis.yml` | Redis |
-| `application-mysql.yml` | MySQL（默认 `mode: single`，可改 sharding） |
+| `application-mysql.yml` | MySQL（`spring.datasource.dynamic.datasource.master`，可选 slave / sharding-db） |
 | `application-pg.yml` | PostgreSQL |
 | `application-oracle.yml` | Oracle |
 | `application-dm.yml` | 达梦 |
