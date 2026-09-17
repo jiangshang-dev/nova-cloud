@@ -15,7 +15,6 @@ public class TodoVO implements Serializable {
     private Long id;
     private String title;
     private String content;
-    /** 0 待办 1 完成 */
     private Integer status;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;

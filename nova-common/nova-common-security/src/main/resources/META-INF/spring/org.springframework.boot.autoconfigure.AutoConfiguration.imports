@@ -1,1 +1,2 @@
 com.nova.security.config.NovaSecurityAutoConfiguration
+com.nova.security.config.NovaFeignInnerAuthAutoConfiguration

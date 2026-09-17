@@ -4,9 +4,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * Todo 演示实体（内存存储，展示 Feign 服务间调用）。
- */
 @Data
 public class DemoTodo {
     private Long id;

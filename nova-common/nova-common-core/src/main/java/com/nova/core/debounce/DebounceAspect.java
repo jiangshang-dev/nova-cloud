@@ -9,17 +9,15 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.StringJoiner;
 
 /**
- * Controller 防重复提交切面。
+ * Controller 防重复提交切面（由 {@link com.nova.core.config.NovaCoreAutoConfiguration} 导入）。
  */
 @Aspect
-@Component
 @RequiredArgsConstructor
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class DebounceAspect {

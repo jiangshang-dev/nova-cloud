@@ -1,6 +1,9 @@
 # =========================================================
 # nova-gateway 专属（端口 / 路由 / 网关鉴权 / 国密）
 # 复制到 Nacos：DataId = nova-gateway-dev.yml
+#
+# 重要：这里不要再写 spring.cloud.nacos.namespace / server-addr
+# 否则会覆盖本地 application.yml，导致注册到错误命名空间
 # =========================================================
 server:
   port: 8080

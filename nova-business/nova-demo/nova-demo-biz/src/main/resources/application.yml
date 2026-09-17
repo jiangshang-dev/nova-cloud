@@ -32,11 +32,11 @@ spring:
       server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
       discovery:
         enabled: true
-        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        namespace: ${NACOS_NAMESPACE:bd3454be-a672-433f-a1da-97f1d0ce8038}
         group: DEFAULT_GROUP
       config:
         enabled: true
-        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        namespace: ${NACOS_NAMESPACE:bd3454be-a672-433f-a1da-97f1d0ce8038}
         group: DEFAULT_GROUP
         file-extension: yml
         refresh-enabled: true

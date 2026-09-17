@@ -3,22 +3,14 @@ package com.nova.redis.debounce;
 import cn.hutool.core.util.StrUtil;
 import com.nova.core.debounce.DebounceCache;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * 基于 Redis 的防抖缓存（优先于内存实现）。
+ * 基于 Redis 的防抖缓存。
  */
-@Primary
-@Component
 @RequiredArgsConstructor
-@ConditionalOnClass(StringRedisTemplate.class)
-@ConditionalOnBean(StringRedisTemplate.class)
 public class DebounceRedisCache implements DebounceCache {
 
     private final StringRedisTemplate redisTemplate;

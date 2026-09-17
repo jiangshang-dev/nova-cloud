@@ -6,9 +6,6 @@ import com.nova.demo.domain.DemoTodo;
 
 import java.util.List;
 
-/**
- * Todo 服务（OpenFeign 远程调用示例业务）。
- */
 public interface TodoService {
 
     List<DemoTodo> list(String title);

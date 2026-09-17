@@ -38,12 +38,12 @@ public class LocalFileStorageClient implements FileStorageClient {
         if (StrUtil.isBlank(config.getBasePath())) {
             throw new IllegalArgumentException("本地存储 basePath 不能为空");
         }
-        this.root = Paths.get(config.getBasePath()).toAbsolutePath().normalize();
+        this.root = resolveBasePath(config.getBasePath());
         FileUtil.mkdir(root.toFile());
         JSONObject ext = parseExt(config.getExtConfig());
         String chunkTemp = ext.getStr("chunkTempDir");
         this.chunkRoot = StrUtil.isNotBlank(chunkTemp)
-                ? Paths.get(chunkTemp).toAbsolutePath().normalize()
+                ? resolveBasePath(chunkTemp)
                 : root.resolve(".chunks");
         FileUtil.mkdir(chunkRoot.toFile());
     }
@@ -193,6 +193,24 @@ public class LocalFileStorageClient implements FileStorageClient {
             return new JSONObject();
         }
         return JSONUtil.parseObj(extConfig);
+    }
+
+    /**
+     * 解析跨平台本地根目录：
+     * <ul>
+     *   <li>{@code ./data/nova-files} 相对路径 → 基于进程工作目录（Docker/各 OS 开发通用）</li>
+     *   <li>{@code ~/xxx} → 展开为 user.home（Mac/Linux/Windows 用户目录）</li>
+     *   <li>{@code /data/nova-files}、{@code D:/nova/files} → 绝对路径直用</li>
+     * </ul>
+     */
+    private static Path resolveBasePath(String basePath) {
+        String raw = basePath.trim();
+        if (raw.startsWith("~/") || raw.startsWith("~\\")) {
+            raw = System.getProperty("user.home") + raw.substring(1);
+        } else if ("~".equals(raw)) {
+            raw = System.getProperty("user.home");
+        }
+        return Paths.get(raw).toAbsolutePath().normalize();
     }
 
     private static String joinUrl(String domain, String objectKey) {

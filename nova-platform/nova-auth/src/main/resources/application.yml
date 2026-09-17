@@ -1,42 +1,41 @@
 # =========================================================
-# 仅保留：应用名 / Profile 组合 / Nacos
-# 业务配置按类型拆分，见同目录 application-*.yml
-# 数据库 Profile：,mysql | ,pg | ,oracle | ,dm
+# 对齐 ruiyada-web 写法：只用 spring.config.import 拉 Nacos
 #
-# 切换：SPRING_PROFILES_ACTIVE=dev,mysql|pg|oracle|dm
+# 注意：nacos.namespace 填的是「命名空间 ID」
+#   - ruiyada 的 ai-service：创建时把 ID 设成了 ai-service（所以名称=ID 能通）
+#   - nova-cloud：控制台显示名称是 nova-cloud，但 ID 是 UUID，必须填 ID
 # =========================================================
 spring:
   application:
     name: nova-auth
   profiles:
-    group:
-      dev:
-        - common
-        - security
-        - redis
-    active: ${SPRING_PROFILES_ACTIVE:dev,mysql}
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     nacos:
-      username: ${NACOS_USERNAME:nacos}
-      password: ${NACOS_PASSWORD:nacos}
+      # 免密保持注释
+#      username: ${NACOS_USERNAME:nacos}
+#      password: ${NACOS_PASSWORD:nacos}
+      # 与本机 Nacos 主端口一致（控制台可能是 8849，客户端连 8848）
       server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
       discovery:
         enabled: true
-        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        # 必须是命名空间 ID，不是显示名称
+        namespace: ${NACOS_NAMESPACE:bd3454be-a672-433f-a1da-97f1d0ce8038}
         group: DEFAULT_GROUP
       config:
         enabled: true
-        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        namespace: ${NACOS_NAMESPACE:bd3454be-a672-433f-a1da-97f1d0ce8038}
         group: DEFAULT_GROUP
         file-extension: yml
         refresh-enabled: true
   config:
+    # 与 ruiyada 一样：不要加 optional，拉不到会直接报错，方便排查
     import:
-      - optional:nacos:${spring.application.name}-dev.${spring.cloud.nacos.config.file-extension}
-      - optional:nacos:application-common.yml
-      - optional:nacos:application-security.yml
-      - optional:nacos:application-redis.yml
-      - optional:nacos:application-mysql.yml
-      - optional:nacos:application-pg.yml
-      - optional:nacos:application-oracle.yml
-      - optional:nacos:application-dm.yml
+      - nacos:${spring.application.name}-dev.yml?group=DEFAULT_GROUP&refreshEnabled=true
+      - nacos:application-common.yml?group=DEFAULT_GROUP&refreshEnabled=true
+      - nacos:application-security.yml?group=DEFAULT_GROUP&refreshEnabled=true
+      - nacos:application-redis.yml?group=DEFAULT_GROUP&refreshEnabled=true
+      - nacos:application-mysql.yml?group=DEFAULT_GROUP&refreshEnabled=true
+#      - nacos:application-pg.yml?group=DEFAULT_GROUP&refreshEnabled=true
+#      - nacos:application-oracle.yml?group=DEFAULT_GROUP&refreshEnabled=true
+#      - nacos:application-dm.yml?group=DEFAULT_GROUP&refreshEnabled=true

@@ -20,7 +20,7 @@ public class StorageConfig {
     private String accessKey;
     private String secretKey;
     private String bucketName;
-    /** 本地根目录或对象前缀 */
+    /** 本地存储根目录（仅 local 生效；S3/MinIO/OSS 忽略） */
     private String basePath;
     /** 对外访问域名，可含 http(s) */
     private String domain;

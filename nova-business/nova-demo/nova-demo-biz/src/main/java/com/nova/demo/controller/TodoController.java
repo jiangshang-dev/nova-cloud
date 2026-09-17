@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Todo 用户侧 API（需登录 JWT）。
- */
 @Tag(name = "Demo Todo")
 @RestController
 @RequestMapping("/demo/todo")

@@ -43,7 +43,6 @@ public class S3FileStorageClient implements FileStorageClient {
     private final StorageType storageType;
     private final S3Client s3Client;
     private final String bucket;
-    private final String keyPrefix;
 
     public S3FileStorageClient(StorageConfig config) {
         this.config = config;
@@ -61,7 +60,7 @@ public class S3FileStorageClient implements FileStorageClient {
             throw new IllegalArgumentException("bucketName 不能为空");
         }
         this.bucket = config.getBucketName();
-        this.keyPrefix = normalizePrefix(config.getBasePath());
+        // basePath 仅用于本地存储，S3/MinIO/OSS 不使用其作为对象前缀
         this.s3Client = buildClient(config, storageType);
     }
 
@@ -211,11 +210,7 @@ public class S3FileStorageClient implements FileStorageClient {
     }
 
     private String fullKey(String objectKey) {
-        String key = StrUtil.removePrefix(objectKey.replace('\\', '/'), "/");
-        if (StrUtil.isBlank(keyPrefix)) {
-            return key;
-        }
-        return keyPrefix + "/" + key;
+        return StrUtil.removePrefix(objectKey.replace('\\', '/'), "/");
     }
 
     private static S3Client buildClient(StorageConfig config, StorageType type) {
@@ -252,13 +247,6 @@ public class S3FileStorageClient implements FileStorageClient {
             return "oss-cn-beijing";
         }
         return "us-east-1";
-    }
-
-    private static String normalizePrefix(String basePath) {
-        if (StrUtil.isBlank(basePath)) {
-            return "";
-        }
-        return StrUtil.removeSuffix(StrUtil.removePrefix(basePath.replace('\\', '/'), "/"), "/");
     }
 
     private static String ensureScheme(String endpoint) {
