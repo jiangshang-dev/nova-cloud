@@ -1,0 +1,10 @@
+# =========================================================
+# 登录 / JWT 安全
+# 复制到 Nacos：DataId = application-security.yml
+# =========================================================
+nova:
+  security:
+    jwt:
+      secret: NovaCloudJwtSecretKeyChangeMePlease32
+      expire-seconds: 7200
+      issuer: nova-cloud

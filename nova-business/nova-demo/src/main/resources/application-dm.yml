@@ -1,0 +1,19 @@
+# =========================================================
+# 达梦 DM8
+# 复制到 Nacos：DataId = application-dm.yml
+# 激活：SPRING_PROFILES_ACTIVE=dev,dm
+# 驱动：业务 pom 引入 DmJdbcDriver18（私服/本地 jar）
+# =========================================================
+nova:
+  datasource:
+    db-type: dameng
+    mode: single
+
+spring:
+  datasource:
+    url: jdbc:dm://${DM_HOST:127.0.0.1}:${DM_PORT:5236}?schema=${DM_SCHEMA:NOVA_CLOUD}
+    username: ${DM_USERNAME:SYSDBA}
+    password: ${DM_PASSWORD:SYSDBA}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
