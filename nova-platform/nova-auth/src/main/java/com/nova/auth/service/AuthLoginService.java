@@ -1,17 +1,24 @@
 package com.nova.auth.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.nova.auth.domain.entity.SysLoginLog;
 import com.nova.auth.domain.entity.SysUser;
+import com.nova.auth.mapper.SysLoginLogMapper;
 import com.nova.auth.mapper.SysUserMapper;
 import com.nova.core.exception.ServiceException;
+import com.nova.core.utils.IdGeneratorUtil;
 import com.nova.security.jwt.JwtTokenProvider;
 import com.nova.security.model.LoginUser;
 import com.nova.security.properties.JwtProperties;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +29,7 @@ import java.util.Map;
 public class AuthLoginService {
 
     private final SysUserMapper sysUserMapper;
+    private final SysLoginLogMapper sysLoginLogMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtProperties jwtProperties;
@@ -32,15 +40,20 @@ public class AuthLoginService {
                 .eq(SysUser::getUsername, username)
                 .last("limit 1"));
         if (user == null) {
+            recordLogin(null, username, 0, "用户名或密码错误");
             throw new ServiceException("用户名或密码错误");
         }
         if (user.getStatus() != null && user.getStatus() == 0) {
+            recordLogin(user, username, 0, "账号已停用");
             throw new ServiceException("账号已停用");
         }
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            recordLogin(user, username, 0, "用户名或密码错误");
             throw new ServiceException("用户名或密码错误");
         }
-        return buildTokenResponse(user);
+        Map<String, Object> result = buildTokenResponse(user);
+        recordLogin(user, username, 1, "登录成功");
+        return result;
     }
 
     public Map<String, Object> loginByEmail(String email, String code) {
@@ -49,12 +62,16 @@ public class AuthLoginService {
                 .eq(SysUser::getEmail, email)
                 .last("limit 1"));
         if (user == null) {
+            recordLogin(null, email, 0, "邮箱未绑定账号");
             throw new ServiceException("邮箱未绑定账号");
         }
         if (user.getStatus() != null && user.getStatus() == 0) {
+            recordLogin(user, email, 0, "账号已停用");
             throw new ServiceException("账号已停用");
         }
-        return buildTokenResponse(user);
+        Map<String, Object> result = buildTokenResponse(user);
+        recordLogin(user, user.getUsername(), 1, "登录成功");
+        return result;
     }
 
     public Map<String, Object> currentUserInfo(String token) {
@@ -77,6 +94,29 @@ public class AuthLoginService {
         return result;
     }
 
+    private void recordLogin(SysUser user, String username, int status, String msg) {
+        try {
+            SysLoginLog log = new SysLoginLog();
+            log.setId(IdGeneratorUtil.nextId());
+            log.setTenantId(user != null && user.getTenantId() != null ? user.getTenantId() : 0L);
+            log.setUserId(user == null ? null : user.getId());
+            log.setUsername(username);
+            log.setStatus(status);
+            log.setMsg(msg);
+            log.setLoginTime(LocalDateTime.now());
+            HttpServletRequest request = currentRequest();
+            if (request != null) {
+                log.setIp(clientIp(request));
+                String ua = request.getHeader("User-Agent");
+                log.setBrowser(parseBrowser(ua));
+                log.setOs(parseOs(ua));
+            }
+            sysLoginLogMapper.insert(log);
+        } catch (Exception ignored) {
+            // 登录日志失败不影响主流程
+        }
+    }
+
     private Map<String, Object> buildTokenResponse(SysUser user) {
         List<String> permissions = sysUserMapper.selectPermissionsByUserId(user.getId());
         LoginUser loginUser = LoginUser.builder()
@@ -89,10 +129,8 @@ public class AuthLoginService {
         Map<String, Object> userInfo = buildFrontendUserInfo(user, permissions);
 
         Map<String, Object> result = new LinkedHashMap<>(12);
-        // 前端 Jeecg 风格字段
         result.put("token", accessToken);
         result.put("userInfo", userInfo);
-        // OAuth2 / 标准字段
         result.put("access_token", accessToken);
         result.put("token_type", "Bearer");
         result.put("expires_in", jwtProperties.getExpireSeconds());
@@ -116,5 +154,46 @@ public class AuthLoginService {
                 .map(code -> Map.of("roleName", code, "value", code))
                 .toList());
         return userInfo;
+    }
+
+    private static HttpServletRequest currentRequest() {
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return attrs == null ? null : attrs.getRequest();
+    }
+
+    private static String clientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            int idx = ip.indexOf(',');
+            return idx > 0 ? ip.substring(0, idx).trim() : ip.trim();
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        return request.getRemoteAddr();
+    }
+
+    private static String parseBrowser(String ua) {
+        if (!StringUtils.hasText(ua)) {
+            return "";
+        }
+        if (ua.contains("Edg")) return "Edge";
+        if (ua.contains("Chrome")) return "Chrome";
+        if (ua.contains("Firefox")) return "Firefox";
+        if (ua.contains("Safari")) return "Safari";
+        return "Other";
+    }
+
+    private static String parseOs(String ua) {
+        if (!StringUtils.hasText(ua)) {
+            return "";
+        }
+        if (ua.contains("Windows")) return "Windows";
+        if (ua.contains("Mac OS")) return "macOS";
+        if (ua.contains("Android")) return "Android";
+        if (ua.contains("iPhone") || ua.contains("iPad")) return "iOS";
+        if (ua.contains("Linux")) return "Linux";
+        return "Other";
     }
 }
