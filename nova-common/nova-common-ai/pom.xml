@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>nova-common-ai</artifactId>
-    <description>AI 公共能力：AgentScope 2 Java</description>
+    <description>AI 公共能力：基于 AgentScope 从配置动态创建模型</description>
 
     <dependencies>
         <dependency>
@@ -27,7 +27,15 @@
         </dependency>
         <dependency>
             <groupId>io.agentscope</groupId>
-            <artifactId>agentscope-extensions-redis</artifactId>
+            <artifactId>agentscope-extensions-model-openai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.agentscope</groupId>
+            <artifactId>agentscope-extensions-model-ollama</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
     </dependencies>
 </project>

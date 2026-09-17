@@ -1,0 +1,24 @@
+# Nacos DataId: nova-ai-server-dev.yml
+spring:
+  application:
+    name: nova-ai-server
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        enabled: true
+        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        group: DEFAULT_GROUP
+      config:
+        enabled: true
+        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        group: DEFAULT_GROUP
+        file-extension: yml
+        refresh-enabled: true
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

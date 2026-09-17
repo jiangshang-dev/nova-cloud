@@ -26,6 +26,7 @@
         <module>nova-search</module>
         <module>nova-monitor</module>
         <module>nova-nacos</module>
+        <module>nova-ai</module>
     </modules>
 
     <properties>
@@ -192,6 +193,16 @@
             <dependency>
                 <groupId>io.agentscope</groupId>
                 <artifactId>agentscope-extensions-model-dashscope</artifactId>
+                <version>${agentscope.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agentscope</groupId>
+                <artifactId>agentscope-extensions-model-openai</artifactId>
+                <version>${agentscope.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agentscope</groupId>
+                <artifactId>agentscope-extensions-model-ollama</artifactId>
                 <version>${agentscope.version}</version>
             </dependency>
             <dependency>

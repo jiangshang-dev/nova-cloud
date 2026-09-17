@@ -1,0 +1,52 @@
+# =========================================================
+# 复制到 Nacos：DataId=nova-ai-server-dev.yml
+# 模型 API Key 请在管理接口 /ai/model/provider 配置，或设置环境变量 DASHSCOPE_API_KEY
+# =========================================================
+server:
+  port: 8085
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/nova_cloud?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: root
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password:
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+
+nova:
+  security:
+    jwt:
+      secret: NovaCloudJwtSecretKeyChangeMePlease32
+      expire-seconds: 7200
+      issuer: nova-cloud
+  ai:
+    workspace: ./work/agentscope/workspace
+    compaction-trigger-messages: 30
+    compaction-keep-messages: 10
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.nova: info
