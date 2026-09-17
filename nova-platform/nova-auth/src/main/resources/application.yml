@@ -1,10 +1,20 @@
-# 仅保留注册中心 / 配置中心连接；业务配置见 application-dev.yml（可直接复制到 Nacos）
-# Nacos DataId: nova-auth-dev.yml  Group: DEFAULT_GROUP  Namespace: nova-cloud
+# =========================================================
+# 仅保留：应用名 / Profile 组合 / Nacos
+# 业务配置按类型拆分，见同目录 application-*.yml
+# 数据库 Profile：,mysql | ,pg | ,oracle | ,dm
+#
+# 切换：SPRING_PROFILES_ACTIVE=dev,mysql|pg|oracle|dm
+# =========================================================
 spring:
   application:
     name: nova-auth
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    group:
+      dev:
+        - common
+        - security
+        - redis
+    active: ${SPRING_PROFILES_ACTIVE:dev,mysql}
   cloud:
     nacos:
       username: ${NACOS_USERNAME:nacos}
@@ -22,4 +32,11 @@ spring:
         refresh-enabled: true
   config:
     import:
-      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:${spring.application.name}-dev.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:application-common.yml
+      - optional:nacos:application-security.yml
+      - optional:nacos:application-redis.yml
+      - optional:nacos:application-mysql.yml
+      - optional:nacos:application-pg.yml
+      - optional:nacos:application-oracle.yml
+      - optional:nacos:application-dm.yml

@@ -1,0 +1,18 @@
+# =========================================================
+# 公共配置（网关）
+# 复制到 Nacos：DataId = application-common.yml
+# =========================================================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    root: info
+    com.nova: info

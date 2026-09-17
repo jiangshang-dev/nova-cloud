@@ -1,0 +1,17 @@
+# =========================================================
+# nova-file 专属（端口 / 上传限制）
+# 复制到 Nacos：DataId = nova-file-dev.yml
+# 注意：对象存储在管理后台配置，不要写在此处
+# =========================================================
+server:
+  port: 8082
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 110MB
+
+logging:
+  level:
+    com.nova: info

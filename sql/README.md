@@ -33,6 +33,8 @@
 | `99_init_data.sql` | 开发环境初始数据 |
 | `all.sql` | 一键执行入口 |
 
+PostgreSQL 对照脚本见目录 [`pg/`](./pg/)。
+
 ## 执行方式
 
 ```bash

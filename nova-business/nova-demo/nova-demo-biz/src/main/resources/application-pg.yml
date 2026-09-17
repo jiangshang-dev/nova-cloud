@@ -1,0 +1,18 @@
+# =========================================================
+# PostgreSQL
+# 复制到 Nacos：DataId = application-pg.yml
+# 激活：SPRING_PROFILES_ACTIVE=dev,pg
+# =========================================================
+nova:
+  datasource:
+    db-type: postgresql
+    mode: single
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${PG_HOST:127.0.0.1}:${PG_PORT:5432}/${PG_DB:nova_cloud}
+    username: ${PG_USERNAME:postgres}
+    password: ${PG_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2

@@ -1,9 +1,15 @@
-# 仅保留注册中心 / 配置中心连接；业务配置见 application-dev.yml（可直接复制到 Nacos）
-# Nacos DataId: nova-gateway-dev.yml  Group: DEFAULT_GROUP  Namespace: nova-cloud
+# =========================================================
+# 仅保留：应用名 / Profile 组合 / Nacos
+# 网关无数据源；配置按 common / security 拆分
+# =========================================================
 spring:
   application:
     name: nova-gateway
   profiles:
+    group:
+      dev:
+        - common
+        - security
     active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     nacos:
@@ -22,4 +28,6 @@ spring:
         refresh-enabled: true
   config:
     import:
-      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:${spring.application.name}-dev.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:application-common.yml
+      - optional:nacos:application-security.yml

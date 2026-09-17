@@ -120,6 +120,26 @@
             </dependency>
             <dependency>
                 <groupId>com.nova</groupId>
+                <artifactId>nova-demo-api</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
+                <artifactId>nova-demo-biz</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
+                <artifactId>nova-file-api</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
+                <artifactId>nova-file-biz</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
                 <artifactId>nova-file-spring-boot-starter</artifactId>
                 <version>${nova.version}</version>
             </dependency>

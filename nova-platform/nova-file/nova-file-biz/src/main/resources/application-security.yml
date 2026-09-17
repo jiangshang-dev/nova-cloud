@@ -1,0 +1,15 @@
+# =========================================================
+# 登录 / JWT / 服务间内部免登 Token
+# 复制到 Nacos：DataId = application-security.yml
+# =========================================================
+nova:
+  security:
+    jwt:
+      secret: NovaCloudJwtSecretKeyChangeMePlease32
+      expire-seconds: 7200
+      issuer: nova-cloud
+    # 服务间 Feign 调用免登：调用方自动带 X-Nova-Inner-Token + X-Nova-From=inner
+    inner:
+      enabled: true
+      token: NovaCloudInnerTokenChangeMe
+      header: X-Nova-Inner-Token
