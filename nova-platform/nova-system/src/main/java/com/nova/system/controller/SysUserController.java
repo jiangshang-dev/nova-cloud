@@ -3,6 +3,7 @@ package com.nova.system.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nova.core.debounce.annotation.Debounce;
 import com.nova.core.result.R;
+import com.nova.log.annotation.AutoLog;
 import com.nova.security.constants.SecurityConstants;
 import com.nova.system.domain.entity.SysUser;
 import com.nova.system.service.SysUserService;
@@ -37,6 +38,12 @@ public class SysUserController {
         return R.ok(sysUserService.page(current, size, username));
     }
 
+    @Operation(summary = "用户列表（下拉/穿梭）")
+    @GetMapping("/list")
+    public R<List<SysUser>> list() {
+        return R.ok(sysUserService.listSimple());
+    }
+
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
     public R<SysUser> detail(@PathVariable Long id) {
@@ -44,6 +51,7 @@ public class SysUserController {
     }
 
     @Debounce
+    @AutoLog("用户管理-新增")
     @Operation(summary = "新增用户")
     @PostMapping
     public R<Long> create(@RequestBody SysUser user) {
@@ -51,6 +59,7 @@ public class SysUserController {
     }
 
     @Debounce
+    @AutoLog("用户管理-修改")
     @Operation(summary = "修改用户")
     @PutMapping
     public R<Void> update(@RequestBody SysUser user) {
@@ -59,6 +68,7 @@ public class SysUserController {
     }
 
     @Debounce
+    @AutoLog(value = "用户管理-删除", businessType = 3)
     @Operation(summary = "删除用户")
     @DeleteMapping("/{id}")
     public R<Void> delete(@PathVariable Long id) {
@@ -67,6 +77,7 @@ public class SysUserController {
     }
 
     @Debounce
+    @AutoLog(value = "用户管理-重置密码", businessType = 2)
     @Operation(summary = "修改密码")
     @PutMapping("/{id}/password")
     public R<Void> updatePassword(@PathVariable Long id, @RequestBody PasswordBody body) {
@@ -81,6 +92,7 @@ public class SysUserController {
     }
 
     @Debounce
+    @AutoLog(value = "用户管理-分配角色", businessType = 4)
     @Operation(summary = "分配用户角色")
     @PutMapping("/{id}/roles")
     public R<Void> assignRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {

@@ -6,8 +6,12 @@ import com.nova.core.exception.ServiceException;
 import com.nova.core.utils.IdGeneratorUtil;
 import com.nova.system.domain.entity.SysRole;
 import com.nova.system.domain.entity.SysRoleMenu;
+import com.nova.system.domain.entity.SysUser;
+import com.nova.system.domain.entity.SysUserRole;
 import com.nova.system.mapper.SysRoleMapper;
 import com.nova.system.mapper.SysRoleMenuMapper;
+import com.nova.system.mapper.SysUserMapper;
+import com.nova.system.mapper.SysUserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,8 @@ public class SysRoleService {
 
     private final SysRoleMapper sysRoleMapper;
     private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysUserRoleMapper sysUserRoleMapper;
+    private final SysUserMapper sysUserMapper;
 
     public Page<SysRole> page(long current, long size, String roleName) {
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
@@ -81,6 +87,7 @@ public class SysRoleService {
     public void delete(Long id) {
         sysRoleMapper.deleteById(id);
         sysRoleMenuMapper.deleteByRoleId(id);
+        sysUserRoleMapper.deleteByRoleId(id);
     }
 
     public List<Long> getMenuIds(Long roleId) {
@@ -101,6 +108,40 @@ public class SysRoleService {
             rm.setRoleId(roleId);
             rm.setMenuId(menuId);
             sysRoleMenuMapper.insert(rm);
+        }
+    }
+
+    public List<Long> getUserIds(Long roleId) {
+        getById(roleId);
+        return sysUserRoleMapper.selectUserIdsByRoleId(roleId);
+    }
+
+    public List<SysUser> listUsers(Long roleId) {
+        getById(roleId);
+        List<Long> userIds = sysUserRoleMapper.selectUserIdsByRoleId(roleId);
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+        List<SysUser> users = sysUserMapper.selectList(new LambdaQueryWrapper<SysUser>()
+                .in(SysUser::getId, userIds)
+                .orderByDesc(SysUser::getId));
+        users.forEach(u -> u.setPassword(null));
+        return users;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void replaceUsers(Long roleId, List<Long> userIds) {
+        getById(roleId);
+        sysUserRoleMapper.deleteByRoleId(roleId);
+        if (userIds == null || userIds.isEmpty()) {
+            return;
+        }
+        for (Long userId : userIds) {
+            SysUserRole ur = new SysUserRole();
+            ur.setId(IdGeneratorUtil.nextId());
+            ur.setRoleId(roleId);
+            ur.setUserId(userId);
+            sysUserRoleMapper.insert(ur);
         }
     }
 }

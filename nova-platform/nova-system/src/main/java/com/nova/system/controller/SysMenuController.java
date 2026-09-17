@@ -2,6 +2,7 @@ package com.nova.system.controller;
 
 import com.nova.core.debounce.annotation.Debounce;
 import com.nova.core.result.R;
+import com.nova.log.annotation.AutoLog;
 import com.nova.security.constants.SecurityConstants;
 import com.nova.system.domain.entity.SysMenu;
 import com.nova.system.domain.vo.MenuTreeVo;
@@ -47,6 +48,7 @@ public class SysMenuController {
     }
 
     @Debounce
+    @AutoLog("菜单管理-新增")
     @Operation(summary = "新增菜单")
     @PostMapping
     public R<Void> create(@RequestBody SysMenu menu) {
@@ -55,6 +57,7 @@ public class SysMenuController {
     }
 
     @Debounce
+    @AutoLog("菜单管理-修改")
     @Operation(summary = "修改菜单")
     @PutMapping
     public R<Void> update(@RequestBody SysMenu menu) {
@@ -63,6 +66,7 @@ public class SysMenuController {
     }
 
     @Debounce
+    @AutoLog(value = "菜单管理-删除", businessType = 3)
     @Operation(summary = "删除菜单")
     @DeleteMapping("/{id}")
     public R<Void> delete(@PathVariable Long id) {

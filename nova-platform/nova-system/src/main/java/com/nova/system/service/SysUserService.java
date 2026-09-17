@@ -44,6 +44,14 @@ public class SysUserService {
         return page;
     }
 
+    public List<SysUser> listSimple() {
+        List<SysUser> users = sysUserMapper.selectList(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getStatus, 1)
+                .orderByDesc(SysUser::getId));
+        users.forEach(u -> u.setPassword(null));
+        return users;
+    }
+
     public SysUser getById(Long id) {
         SysUser user = sysUserMapper.selectById(id);
         if (user == null) {

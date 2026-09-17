@@ -56,4 +56,39 @@ public class SysLogService {
     public void clearLogin() {
         sysLoginLogMapper.delete(new LambdaQueryWrapper<>());
     }
+
+    public void saveLoginLog(SysLoginLog log) {
+        if (log.getId() == null) {
+            log.setId(com.nova.core.utils.IdGeneratorUtil.nextId());
+        }
+        if (log.getTenantId() == null) {
+            log.setTenantId(0L);
+        }
+        if (log.getLoginTime() == null) {
+            log.setLoginTime(java.time.LocalDateTime.now());
+        }
+        if (log.getStatus() == null) {
+            log.setStatus(1);
+        }
+        sysLoginLogMapper.insert(log);
+    }
+
+    public void saveOperLog(SysOperLog log) {
+        if (log.getId() == null) {
+            log.setId(com.nova.core.utils.IdGeneratorUtil.nextId());
+        }
+        if (log.getTenantId() == null) {
+            log.setTenantId(0L);
+        }
+        if (log.getOperTime() == null) {
+            log.setOperTime(java.time.LocalDateTime.now());
+        }
+        if (log.getStatus() == null) {
+            log.setStatus(1);
+        }
+        if (log.getCostTime() == null) {
+            log.setCostTime(0L);
+        }
+        sysOperLogMapper.insert(log);
+    }
 }
