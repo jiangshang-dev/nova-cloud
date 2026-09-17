@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>com.nova</groupId>
-            <artifactId>nova-common-crypto</artifactId>
+            <artifactId>nova-crypto-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>

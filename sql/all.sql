@@ -443,7 +443,7 @@ CREATE TABLE `file_storage` (
   `tenant_id`       BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '租户ID，0表示全局',
   `storage_code`    VARCHAR(64)     NOT NULL COMMENT '存储编码',
   `storage_name`    VARCHAR(128)    NOT NULL COMMENT '存储名称',
-  `storage_type`    VARCHAR(32)     NOT NULL COMMENT '类型：local/minio/oss/cos/s3',
+  `storage_type`    VARCHAR(32)     NOT NULL COMMENT '类型：local/minio/rustfs/oss/s3',
   `endpoint`        VARCHAR(255)             DEFAULT NULL COMMENT '服务端点',
   `region`          VARCHAR(64)              DEFAULT NULL COMMENT '区域',
   `access_key`      VARCHAR(128)             DEFAULT NULL COMMENT '访问密钥，建议加密存储',
@@ -1139,7 +1139,8 @@ VALUES
 (11, 8, '知识库', 'C', 'knowledge', 'ai/knowledge/index', 'ai:knowledge:list', 'documentation', 3, 1, 1, 0, 0, 0),
 (12, 8, '工作流', 'C', 'workflow', 'ai/workflow/index', 'ai:workflow:list', 'tree', 4, 1, 1, 0, 0, 0),
 (13, 0, '文件中心', 'M', '/file', NULL, NULL, 'upload', 3, 1, 1, 0, 0, 0),
-(14, 13, '文件管理', 'C', 'list', 'file/index', 'file:info:list', 'list', 1, 1, 1, 0, 0, 0),
+(14, 13, '文件管理', 'C', 'list', 'file/list/index', 'file:info:list', 'list', 1, 1, 1, 0, 0, 0),
+(18, 13, '存储配置', 'C', 'storage', 'file/storage/index', 'file:storage:list', 'server', 2, 1, 1, 0, 0, 0),
 (15, 0, '监控中心', 'M', '/monitor', NULL, NULL, 'monitor', 4, 1, 1, 0, 0, 0),
 (16, 15, '操作日志', 'C', 'operlog', 'monitor/operlog/index', 'monitor:operlog:list', 'form', 1, 1, 1, 0, 0, 0),
 (17, 15, '登录日志', 'C', 'loginlog', 'monitor/loginlog/index', 'monitor:loginlog:list', 'logininfor', 2, 1, 1, 0, 0, 0);

@@ -11,6 +11,7 @@
     <file url="file://$PROJECT_DIR$/nova-common/nova-common-crypto/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-common/nova-common-log/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-common/nova-common-log/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-common/nova-common-mq/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-common/nova-common-mybatis/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-common/nova-common-mybatis/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-common/nova-common-redis/src/main/java" charset="UTF-8" />
@@ -33,6 +34,7 @@
     <file url="file://$PROJECT_DIR$/nova-search/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-starters/nova-ai-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-starters/nova-ai-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nova-starters/nova-crypto-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-starters/nova-file-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-starters/nova-file-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nova-starters/sentinel-spring-boot-starter/src/main/java" charset="UTF-8" />

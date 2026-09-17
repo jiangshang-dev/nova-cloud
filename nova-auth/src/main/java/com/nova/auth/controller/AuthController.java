@@ -2,6 +2,7 @@ package com.nova.auth.controller;
 
 import com.nova.auth.service.AuthLoginService;
 import com.nova.auth.service.EmailCodeService;
+import com.nova.core.debounce.annotation.Debounce;
 import com.nova.core.result.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,7 @@ public class AuthController {
     private final AuthLoginService authLoginService;
     private final EmailCodeService emailCodeService;
 
+    @Debounce
     @Operation(summary = "发送邮箱验证码")
     @PostMapping("/code/email")
     public R<Void> sendEmailCode(@RequestBody @Validated EmailCodeRequest request) {
@@ -34,12 +36,14 @@ public class AuthController {
         return R.ok();
     }
 
+    @Debounce
     @Operation(summary = "账号密码登录")
     @PostMapping("/login/password")
     public R<Map<String, Object>> loginByPassword(@RequestBody @Validated PasswordLoginRequest request) {
         return R.ok(authLoginService.loginByPassword(request.getUsername(), request.getPassword()));
     }
 
+    @Debounce
     @Operation(summary = "邮箱验证码登录")
     @PostMapping("/login/email")
     public R<Map<String, Object>> loginByEmail(@RequestBody @Validated EmailLoginRequest request) {

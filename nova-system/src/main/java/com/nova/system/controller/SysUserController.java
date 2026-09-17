@@ -1,6 +1,7 @@
 package com.nova.system.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.nova.core.debounce.annotation.Debounce;
 import com.nova.core.result.R;
 import com.nova.security.constants.SecurityConstants;
 import com.nova.system.domain.entity.SysMenu;
@@ -43,6 +44,7 @@ public class SysUserController {
         return R.ok(sysUserService.getById(id));
     }
 
+    @Debounce
     @Operation(summary = "新增用户")
     @PostMapping("/user")
     public R<Void> create(@RequestBody SysUser user) {
@@ -50,6 +52,7 @@ public class SysUserController {
         return R.ok();
     }
 
+    @Debounce
     @Operation(summary = "修改用户")
     @PutMapping("/user")
     public R<Void> update(@RequestBody SysUser user) {
@@ -57,6 +60,7 @@ public class SysUserController {
         return R.ok();
     }
 
+    @Debounce
     @Operation(summary = "删除用户")
     @DeleteMapping("/user/{id}")
     public R<Void> delete(@PathVariable Long id) {

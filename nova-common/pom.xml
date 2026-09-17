@@ -20,6 +20,7 @@
         <module>nova-common-log</module>
         <module>nova-common-crypto</module>
         <module>nova-common-ai</module>
+        <module>nova-common-mq</module>
     </modules>
 
     <description>

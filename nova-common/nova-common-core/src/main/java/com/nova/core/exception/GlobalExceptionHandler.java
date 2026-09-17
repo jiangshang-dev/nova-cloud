@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         return R.fail(e.getCode() == null ? 500 : e.getCode(), e.getMessage());
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, IllegalArgumentException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.OK)
     public R<Void> handleValidException(Exception e) {
         return R.fail(400, e.getMessage());

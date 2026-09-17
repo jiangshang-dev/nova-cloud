@@ -40,13 +40,13 @@ nova:
   mail:
     enabled: true
     account:
-      host: smtp.example.com
+      host: smtp.163.com
       port: 465
       auth: true
       sslEnable: true
-      from: noreply@example.com
-      user: noreply@example.com
-      pass: change-me
+      from: wuzhixin666@163.com
+      user: wuzhixin666@163.com
+      pass: RVe5VbNd2KLpnHCL
   auth:
     email-code:
       expire-minutes: 5

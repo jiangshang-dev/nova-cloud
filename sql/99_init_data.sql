@@ -62,7 +62,8 @@ VALUES
 (11, 8, '知识库', 'C', 'knowledge', 'ai/knowledge/index', 'ai:knowledge:list', 'documentation', 3, 1, 1, 0, 0, 0),
 (12, 8, '工作流', 'C', 'workflow', 'ai/workflow/index', 'ai:workflow:list', 'tree', 4, 1, 1, 0, 0, 0),
 (13, 0, '文件中心', 'M', '/file', NULL, NULL, 'upload', 3, 1, 1, 0, 0, 0),
-(14, 13, '文件管理', 'C', 'list', 'file/index', 'file:info:list', 'list', 1, 1, 1, 0, 0, 0),
+(14, 13, '文件管理', 'C', 'list', 'file/list/index', 'file:info:list', 'list', 1, 1, 1, 0, 0, 0),
+(18, 13, '存储配置', 'C', 'storage', 'file/storage/index', 'file:storage:list', 'server', 2, 1, 1, 0, 0, 0),
 (15, 0, '监控中心', 'M', '/monitor', NULL, NULL, 'monitor', 4, 1, 1, 0, 0, 0),
 (16, 15, '操作日志', 'C', 'operlog', 'monitor/operlog/index', 'monitor:operlog:list', 'form', 1, 1, 1, 0, 0, 0),
 (17, 15, '登录日志', 'C', 'loginlog', 'monitor/loginlog/index', 'monitor:loginlog:list', 'logininfor', 2, 1, 1, 0, 0, 0);

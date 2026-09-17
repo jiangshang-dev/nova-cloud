@@ -122,6 +122,11 @@
             </dependency>
             <dependency>
                 <groupId>com.nova</groupId>
+                <artifactId>nova-crypto-spring-boot-starter</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
                 <artifactId>nova-file-spring-boot-starter</artifactId>
                 <version>${nova.version}</version>
             </dependency>

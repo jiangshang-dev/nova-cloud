@@ -27,4 +27,11 @@ public final class IdGeneratorUtil {
     public static String getSnowflakeNextIdStr() {
         return IdUtil.getSnowflakeNextIdStr();
     }
+
+    /**
+     * 雪花 Long 主键。
+     */
+    public static long nextId() {
+        return IdUtil.getSnowflakeNextId();
+    }
 }

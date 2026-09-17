@@ -13,7 +13,7 @@ CREATE TABLE `file_storage` (
   `tenant_id`       BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '租户ID，0表示全局',
   `storage_code`    VARCHAR(64)     NOT NULL COMMENT '存储编码',
   `storage_name`    VARCHAR(128)    NOT NULL COMMENT '存储名称',
-  `storage_type`    VARCHAR(32)     NOT NULL COMMENT '类型：local/minio/oss/cos/s3',
+  `storage_type`    VARCHAR(32)     NOT NULL COMMENT '类型：local/minio/rustfs/oss/s3',
   `endpoint`        VARCHAR(255)             DEFAULT NULL COMMENT '服务端点',
   `region`          VARCHAR(64)              DEFAULT NULL COMMENT '区域',
   `access_key`      VARCHAR(128)             DEFAULT NULL COMMENT '访问密钥，建议加密存储',
