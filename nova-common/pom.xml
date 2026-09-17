@@ -16,11 +16,9 @@
         <module>nova-common-security</module>
         <module>nova-common-redis</module>
         <module>nova-common-core</module>
-        <module>nova-common-mybatis</module>
         <module>nova-common-log</module>
         <module>nova-common-crypto</module>
         <module>nova-common-ai</module>
-        <module>nova-common-mq</module>
     </modules>
 
     <description>

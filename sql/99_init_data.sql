@@ -108,6 +108,28 @@ INSERT INTO `file_storage`
 VALUES
 (1, 0, 'local', '本地存储', 'local', '/data/nova/files', 1, 1, 0, '开发默认本地磁盘');
 
+-- AI 模型提供商 / 模型 / 默认 Agent（API Key 请在后台填写，或设置环境变量 DASHSCOPE_API_KEY）
+INSERT INTO `ai_model_provider`
+(`id`, `tenant_id`, `provider_code`, `provider_name`, `base_url`, `api_key_cipher`, `status`, `is_deleted`, `remark`)
+VALUES
+(1, 0, 'dashscope', '阿里云百炼 DashScope', NULL, NULL, 1, 0, 'API Key 优先读库，为空则读环境变量 DASHSCOPE_API_KEY'),
+(2, 0, 'openai', 'OpenAI 兼容', 'https://api.openai.com/v1', NULL, 1, 0, '可用于 OpenAI / DeepSeek 等兼容端点'),
+(3, 0, 'ollama', 'Ollama 本地', 'http://127.0.0.1:11434', NULL, 1, 0, '本地模型');
+
+INSERT INTO `ai_model`
+(`id`, `tenant_id`, `provider_id`, `model_code`, `model_name`, `model_type`, `max_tokens`, `status`, `is_deleted`, `remark`)
+VALUES
+(1, 0, 1, 'dashscope:qwen-plus', '通义千问 Plus', 'chat', 2048, 1, 0, '默认对话模型'),
+(2, 0, 1, 'dashscope:qwen-turbo', '通义千问 Turbo', 'chat', 2048, 1, 0, NULL),
+(3, 0, 3, 'ollama:llama3', 'Llama3 本地', 'chat', 2048, 1, 0, NULL);
+
+INSERT INTO `ai_agent`
+(`id`, `tenant_id`, `agent_code`, `agent_name`, `model_id`, `sys_prompt`, `workspace_path`, `status`, `is_deleted`, `remark`)
+VALUES
+(1, 0, 'default', '默认助手', 1,
+ '你是 NovaCloud 平台助手，回答简洁准确，使用中文。',
+ './work/agentscope/workspace', 1, 0, 'Harness 多轮会话默认 Agent');
+
 -- 默认 OAuth2 客户端（密钥请在生产环境重新生成）
 INSERT INTO `auth_client`
 (`id`, `tenant_id`, `client_id`, `client_secret`, `client_name`, `authorization_grant_types`,

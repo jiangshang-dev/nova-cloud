@@ -21,6 +21,10 @@
         <module>sentinel-spring-boot-starter</module>
         <module>nova-ai-spring-boot-starter</module>
         <module>nova-crypto-spring-boot-starter</module>
+        <module>nova-mq-spring-boot-starter</module>
+        <module>nova-datasource-spring-boot-starter</module>
+        <module>nova-mybatis-spring-boot-starter</module>
+        <module>nova-shardingsphere-spring-boot-starter</module>
     </modules>
 
     <properties>

@@ -41,6 +41,7 @@
 
         <!-- ORM / Cache / Utils -->
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
+        <shardingsphere.version>5.5.0</shardingsphere.version>
         <hutool.version>5.8.36</hutool.version>
         <redisson.version>3.45.1</redisson.version>
         <!-- API Docs -->
@@ -88,11 +89,6 @@
             </dependency>
             <dependency>
                 <groupId>com.nova</groupId>
-                <artifactId>nova-common-mybatis</artifactId>
-                <version>${nova.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nova</groupId>
                 <artifactId>nova-common-security</artifactId>
                 <version>${nova.version}</version>
             </dependency>
@@ -111,7 +107,6 @@
                 <artifactId>nova-common-ai</artifactId>
                 <version>${nova.version}</version>
             </dependency>
-
             <!-- ========== Nova Starters ========== -->
             <dependency>
                 <groupId>com.nova</groupId>
@@ -130,6 +125,21 @@
             </dependency>
             <dependency>
                 <groupId>com.nova</groupId>
+                <artifactId>nova-mq-spring-boot-starter</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
+                <artifactId>nova-mybatis-spring-boot-starter</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
+                <artifactId>nova-shardingsphere-spring-boot-starter</artifactId>
+                <version>${nova.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nova</groupId>
                 <artifactId>sentinel-spring-boot-starter</artifactId>
                 <version>${nova.version}</version>
             </dependency>
@@ -144,6 +154,12 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!-- ShardingSphere-JDBC -->
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc</artifactId>
+                <version>${shardingsphere.version}</version>
             </dependency>
 
             <!-- Hutool -->

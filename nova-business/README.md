@@ -24,7 +24,8 @@
 
 - `nova-common-core`：统一响应 / 异常 / `@Debounce`
 - `nova-common-security`：JWT
-- `nova-common-redis` / `nova-common-mybatis`：按需
+- `nova-common-redis` / `nova-mybatis-spring-boot-starter`：按需
+- `nova-mq-spring-boot-starter` / `nova-shardingsphere-spring-boot-starter`：按需
 - `nova-*-spring-boot-starter`：按需（文件、国密等）
 
 ## Demo 接口
