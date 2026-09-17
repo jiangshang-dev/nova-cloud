@@ -23,24 +23,28 @@ public class SysMenuController {
 
     private final SysMenuService sysMenuService;
 
+    @AutoLog("菜单管理-用户权限菜单")
     @Operation(summary = "当前用户菜单与权限（Jeecg 兼容）")
     @GetMapping("/user")
     public R<UserPermissionVo> userMenus(@RequestHeader(SecurityConstants.USER_ID_HEADER) Long userId) {
         return R.ok(sysMenuService.getUserPermission(userId));
     }
 
+    @AutoLog("菜单管理-菜单树")
     @Operation(summary = "菜单树")
     @GetMapping("/tree")
     public R<List<MenuTreeVo>> tree() {
         return R.ok(sysMenuService.tree());
     }
 
+    @AutoLog("菜单管理-列表查询")
     @Operation(summary = "菜单列表")
     @GetMapping("/list")
     public R<List<SysMenu>> list() {
         return R.ok(sysMenuService.listMenus());
     }
 
+    @AutoLog("菜单管理-详情")
     @Operation(summary = "菜单详情")
     @GetMapping("/{id}")
     public R<SysMenu> detail(@PathVariable Long id) {
@@ -48,7 +52,7 @@ public class SysMenuController {
     }
 
     @Debounce
-    @AutoLog("菜单管理-新增")
+    @AutoLog(value = "菜单管理-新增", businessType = 1)
     @Operation(summary = "新增菜单")
     @PostMapping
     public R<Void> create(@RequestBody SysMenu menu) {
@@ -57,7 +61,7 @@ public class SysMenuController {
     }
 
     @Debounce
-    @AutoLog("菜单管理-修改")
+    @AutoLog(value = "菜单管理-修改", businessType = 2)
     @Operation(summary = "修改菜单")
     @PutMapping
     public R<Void> update(@RequestBody SysMenu menu) {

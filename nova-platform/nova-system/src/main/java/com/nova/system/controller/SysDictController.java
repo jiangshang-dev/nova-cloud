@@ -23,7 +23,7 @@ public class SysDictController {
 
     private final SysDictService sysDictService;
 
-    @AutoLog("字典类型分页")
+    @AutoLog("字典管理-类型分页")
     @Operation(summary = "字典类型分页")
     @GetMapping("/type/page")
     public R<Page<SysDictType>> typePage(@RequestParam(defaultValue = "1") long current,
@@ -33,7 +33,7 @@ public class SysDictController {
         return R.ok(sysDictService.typePage(current, size, dictName, dictType));
     }
 
-    @AutoLog("字典类型列表")
+    @AutoLog("字典管理-类型列表")
     @Operation(summary = "字典类型列表")
     @GetMapping("/type/list")
     public R<List<SysDictType>> typeList() {
@@ -41,7 +41,7 @@ public class SysDictController {
     }
 
     @Debounce
-    @AutoLog("字典管理-新增类型")
+    @AutoLog(value = "字典管理-新增类型", businessType = 1)
     @Operation(summary = "新增字典类型")
     @PostMapping("/type")
     public R<Long> createType(@RequestBody SysDictType type) {
@@ -49,7 +49,7 @@ public class SysDictController {
     }
 
     @Debounce
-    @AutoLog("字典管理-修改类型")
+    @AutoLog(value = "字典管理-修改类型", businessType = 2)
     @Operation(summary = "修改字典类型")
     @PutMapping("/type")
     public R<Void> updateType(@RequestBody SysDictType type) {
@@ -66,7 +66,7 @@ public class SysDictController {
         return R.ok();
     }
 
-    @AutoLog("字典数据分页")
+    @AutoLog("字典管理-数据分页")
     @Operation(summary = "字典数据分页")
     @GetMapping("/data/page")
     public R<Page<SysDictData>> dataPage(@RequestParam(defaultValue = "1") long current,
@@ -76,23 +76,23 @@ public class SysDictController {
         return R.ok(sysDictService.dataPage(current, size, dictType, dictLabel));
     }
 
-    @AutoLog("按类型查询字典数据")
+    @AutoLog("字典管理-数据列表")
     @Operation(summary = "按类型查询字典数据")
     @GetMapping("/data/list")
     public R<List<SysDictData>> dataList(@RequestParam(required = false) String dictType) {
         return R.ok(sysDictService.dataList(dictType));
     }
 
-    @AutoLog("新增字典数据")
     @Debounce
+    @AutoLog(value = "字典管理-新增数据", businessType = 1)
     @Operation(summary = "新增字典数据")
     @PostMapping("/data")
     public R<Long> createData(@RequestBody SysDictData data) {
         return R.ok(sysDictService.createData(data));
     }
 
-    @AutoLog("修改字典数据")
     @Debounce
+    @AutoLog(value = "字典管理-修改数据", businessType = 2)
     @Operation(summary = "修改字典数据")
     @PutMapping("/data")
     public R<Void> updateData(@RequestBody SysDictData data) {
@@ -100,8 +100,8 @@ public class SysDictController {
         return R.ok();
     }
 
-    @AutoLog("删除字典数据")
     @Debounce
+    @AutoLog(value = "字典管理-删除数据", businessType = 3)
     @Operation(summary = "删除字典数据")
     @DeleteMapping("/data/{id}")
     public R<Void> deleteData(@PathVariable Long id) {
@@ -109,7 +109,7 @@ public class SysDictController {
         return R.ok();
     }
 
-    @AutoLog("全部字典项（前端缓存）")
+    @AutoLog("字典管理-全部字典项")
     @Operation(summary = "全部字典项（前端缓存）")
     @GetMapping("/all")
     public R<Map<String, List<Map<String, Object>>>> allItems() {

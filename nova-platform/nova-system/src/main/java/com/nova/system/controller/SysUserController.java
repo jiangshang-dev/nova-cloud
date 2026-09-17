@@ -24,12 +24,14 @@ public class SysUserController {
 
     private final SysUserService sysUserService;
 
+    @AutoLog("用户管理-当前用户信息")
     @Operation(summary = "当前登录用户信息")
     @GetMapping("/info")
     public R<Map<String, Object>> currentUser(@RequestHeader(SecurityConstants.USER_ID_HEADER) Long userId) {
         return R.ok(sysUserService.getUserInfo(userId));
     }
 
+    @AutoLog("用户管理-分页查询")
     @Operation(summary = "用户分页")
     @GetMapping("/page")
     public R<Page<SysUser>> page(@RequestParam(defaultValue = "1") long current,
@@ -38,12 +40,14 @@ public class SysUserController {
         return R.ok(sysUserService.page(current, size, username));
     }
 
+    @AutoLog("用户管理-列表查询")
     @Operation(summary = "用户列表（下拉/穿梭）")
     @GetMapping("/list")
     public R<List<SysUser>> list() {
         return R.ok(sysUserService.listSimple());
     }
 
+    @AutoLog("用户管理-详情")
     @Operation(summary = "用户详情")
     @GetMapping("/{id}")
     public R<SysUser> detail(@PathVariable Long id) {
@@ -51,7 +55,7 @@ public class SysUserController {
     }
 
     @Debounce
-    @AutoLog("用户管理-新增")
+    @AutoLog(value = "用户管理-新增", businessType = 1)
     @Operation(summary = "新增用户")
     @PostMapping
     public R<Long> create(@RequestBody SysUser user) {
@@ -59,7 +63,7 @@ public class SysUserController {
     }
 
     @Debounce
-    @AutoLog("用户管理-修改")
+    @AutoLog(value = "用户管理-修改", businessType = 2)
     @Operation(summary = "修改用户")
     @PutMapping
     public R<Void> update(@RequestBody SysUser user) {
@@ -85,6 +89,7 @@ public class SysUserController {
         return R.ok();
     }
 
+    @AutoLog("用户管理-查询角色ID")
     @Operation(summary = "用户角色ID列表")
     @GetMapping("/{id}/roleIds")
     public R<List<Long>> roleIds(@PathVariable Long id) {

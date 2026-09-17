@@ -24,9 +24,9 @@
         <module>nova-platform</module>
         <module>nova-business</module>
         <module>nova-search</module>
-        <module>nova-monitor</module>
         <module>nova-nacos</module>
         <module>nova-ai</module>
+        <module>nova-visual</module>
     </modules>
 
     <properties>
@@ -56,6 +56,8 @@
         <nova.version>1.0-SNAPSHOT</nova.version>
         <!-- AWS -->
         <aws.version>2.40.15</aws.version>
+        <!-- Spring Boot Admin（对齐 Boot 3.4） -->
+        <spring-boot-admin.version>3.4.7</spring-boot-admin.version>
     </properties>
 
     <dependencyManagement>
@@ -174,6 +176,18 @@
                 <groupId>com.nova</groupId>
                 <artifactId>skywalking-spring-boot-starter</artifactId>
                 <version>${nova.version}</version>
+            </dependency>
+
+            <!-- Spring Boot Admin -->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
             </dependency>
 
             <!-- MyBatis-Plus -->

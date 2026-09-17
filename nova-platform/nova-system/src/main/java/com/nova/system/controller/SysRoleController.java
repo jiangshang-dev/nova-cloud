@@ -5,6 +5,7 @@ import com.nova.core.debounce.annotation.Debounce;
 import com.nova.core.result.R;
 import com.nova.log.annotation.AutoLog;
 import com.nova.system.domain.entity.SysRole;
+import com.nova.system.domain.entity.SysUser;
 import com.nova.system.service.SysRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +22,7 @@ public class SysRoleController {
 
     private final SysRoleService sysRoleService;
 
+    @AutoLog("角色管理-分页查询")
     @Operation(summary = "角色分页")
     @GetMapping("/page")
     public R<Page<SysRole>> page(@RequestParam(defaultValue = "1") long current,
@@ -29,12 +31,14 @@ public class SysRoleController {
         return R.ok(sysRoleService.page(current, size, roleName));
     }
 
+    @AutoLog("角色管理-列表查询")
     @Operation(summary = "角色列表")
     @GetMapping("/list")
     public R<List<SysRole>> list() {
         return R.ok(sysRoleService.list());
     }
 
+    @AutoLog("角色管理-详情")
     @Operation(summary = "角色详情")
     @GetMapping("/{id}")
     public R<SysRole> detail(@PathVariable Long id) {
@@ -42,7 +46,7 @@ public class SysRoleController {
     }
 
     @Debounce
-    @AutoLog("角色管理-新增")
+    @AutoLog(value = "角色管理-新增", businessType = 1)
     @Operation(summary = "新增角色")
     @PostMapping
     public R<Long> create(@RequestBody SysRole role) {
@@ -50,7 +54,7 @@ public class SysRoleController {
     }
 
     @Debounce
-    @AutoLog("角色管理-修改")
+    @AutoLog(value = "角色管理-修改", businessType = 2)
     @Operation(summary = "修改角色")
     @PutMapping
     public R<Void> update(@RequestBody SysRole role) {
@@ -67,6 +71,7 @@ public class SysRoleController {
         return R.ok();
     }
 
+    @AutoLog("角色管理-查询菜单ID")
     @Operation(summary = "角色菜单ID列表")
     @GetMapping("/{id}/menuIds")
     public R<List<Long>> menuIds(@PathVariable Long id) {
@@ -82,15 +87,17 @@ public class SysRoleController {
         return R.ok();
     }
 
+    @AutoLog("角色管理-查询用户ID")
     @Operation(summary = "角色下用户ID列表")
     @GetMapping("/{id}/userIds")
     public R<List<Long>> userIds(@PathVariable Long id) {
         return R.ok(sysRoleService.getUserIds(id));
     }
 
+    @AutoLog("角色管理-查询用户列表")
     @Operation(summary = "角色下用户列表")
     @GetMapping("/{id}/users")
-    public R<List<com.nova.system.domain.entity.SysUser>> users(@PathVariable Long id) {
+    public R<List<SysUser>> users(@PathVariable Long id) {
         return R.ok(sysRoleService.listUsers(id));
     }
 

@@ -21,19 +21,21 @@ public class SysDeptController {
 
     private final SysDeptService sysDeptService;
 
-    @AutoLog("部门树")
+    @AutoLog("部门管理-部门树")
     @Operation(summary = "部门树")
     @GetMapping("/tree")
     public R<List<DeptTreeVo>> tree(@RequestParam(required = false) String deptName) {
         return R.ok(sysDeptService.tree(deptName));
     }
 
+    @AutoLog("部门管理-列表查询")
     @Operation(summary = "部门列表")
     @GetMapping("/list")
     public R<List<SysDept>> list(@RequestParam(required = false) String deptName) {
         return R.ok(sysDeptService.list(deptName));
     }
 
+    @AutoLog("部门管理-详情")
     @Operation(summary = "部门详情")
     @GetMapping("/{id}")
     public R<SysDept> detail(@PathVariable Long id) {
@@ -41,7 +43,7 @@ public class SysDeptController {
     }
 
     @Debounce
-    @AutoLog("部门管理-新增")
+    @AutoLog(value = "部门管理-新增", businessType = 1)
     @Operation(summary = "新增部门")
     @PostMapping
     public R<Long> create(@RequestBody SysDept dept) {
@@ -49,7 +51,7 @@ public class SysDeptController {
     }
 
     @Debounce
-    @AutoLog("部门管理-修改")
+    @AutoLog(value = "部门管理-修改", businessType = 2)
     @Operation(summary = "修改部门")
     @PutMapping
     public R<Void> update(@RequestBody SysDept dept) {
