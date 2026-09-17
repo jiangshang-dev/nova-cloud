@@ -1,5 +1,6 @@
 package com.nova.file.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.nova.core.debounce.annotation.Debounce;
 import com.nova.core.result.R;
 import com.nova.file.domain.entity.FileStorage;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -46,9 +48,9 @@ public class FileStorageController {
     @Debounce
     @Operation(summary = "更新存储配置")
     @PutMapping("/{id}")
-    public R<Void> update(@PathVariable Long id, @RequestBody FileStorage storage) {
-        storage.setId(id);
-        FileStorage db = fileStorageService.getById(id);
+    public R<Void> update(@PathVariable String id, @RequestBody FileStorage storage) {
+        FileStorage db = resolveStorage(id, storage.getStorageCode());
+        storage.setId(db.getId());
         if (storage.getSecretKey() != null && storage.getSecretKey().contains("*")) {
             storage.setSecretKey(db.getSecretKey());
         }
@@ -62,31 +64,47 @@ public class FileStorageController {
     @Debounce
     @Operation(summary = "删除存储配置")
     @DeleteMapping("/{id}")
-    public R<Void> delete(@PathVariable Long id) {
-        fileStorageService.delete(id);
+    public R<Void> delete(@PathVariable String id,
+                          @RequestParam(required = false) String storageCode) {
+        fileStorageService.delete(resolveStorage(id, storageCode).getId());
         return R.ok();
     }
 
     @Debounce
     @Operation(summary = "启用（同时关闭其它）")
     @PostMapping("/{id}/enable")
-    public R<Void> enable(@PathVariable Long id) {
-        fileStorageService.enable(id);
+    public R<Void> enable(@PathVariable String id,
+                          @RequestParam(required = false) String storageCode) {
+        fileStorageService.enable(resolveStorage(id, storageCode).getId());
         return R.ok();
     }
 
     @Debounce
     @Operation(summary = "关闭")
     @PostMapping("/{id}/disable")
-    public R<Void> disable(@PathVariable Long id) {
-        fileStorageService.disable(id);
+    public R<Void> disable(@PathVariable String id,
+                           @RequestParam(required = false) String storageCode) {
+        fileStorageService.disable(resolveStorage(id, storageCode).getId());
         return R.ok();
     }
 
     @Operation(summary = "连通性测试")
     @PostMapping("/{id}/test")
-    public R<Void> test(@PathVariable Long id) {
-        fileStorageService.test(id);
+    public R<Void> test(@PathVariable String id,
+                        @RequestParam(required = false) String storageCode) {
+        fileStorageService.test(resolveStorage(id, storageCode).getId());
         return R.ok();
+    }
+
+    private FileStorage resolveStorage(String id, String storageCode) {
+        Long lid = null;
+        if (StrUtil.isNotBlank(id) && !"undefined".equals(id) && !"null".equals(id)) {
+            try {
+                lid = Long.parseLong(id.trim());
+            } catch (NumberFormatException ignored) {
+                // ignore
+            }
+        }
+        return fileStorageService.resolve(lid, storageCode);
     }
 }

@@ -1,1 +1,2 @@
 com.nova.core.config.NovaCoreAutoConfiguration
+com.nova.core.config.NovaJacksonAutoConfiguration

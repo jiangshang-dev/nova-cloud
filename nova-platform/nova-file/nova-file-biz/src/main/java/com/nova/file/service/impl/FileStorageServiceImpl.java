@@ -59,6 +59,33 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
+    public FileStorage getByCode(String storageCode) {
+        AssertUtil.isTrue(StrUtil.isNotBlank(storageCode), "storageCode 不能为空");
+        FileStorage storage = fileStorageMapper.selectOne(new LambdaQueryWrapper<FileStorage>()
+                .eq(FileStorage::getStorageCode, storageCode)
+                .last("LIMIT 1"));
+        AssertUtil.notNull(storage, "存储配置不存在");
+        return storage;
+    }
+
+    /**
+     * 兼容前端雪花 ID 精度丢失：优先按 id，找不到再按 storageCode。
+     */
+    @Override
+    public FileStorage resolve(Long id, String storageCode) {
+        if (id != null) {
+            FileStorage byId = fileStorageMapper.selectById(id);
+            if (byId != null) {
+                return byId;
+            }
+        }
+        if (StrUtil.isNotBlank(storageCode)) {
+            return getByCode(storageCode);
+        }
+        throw new IllegalArgumentException("存储配置不存在");
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Long create(FileStorage storage) {
         AssertUtil.isTrue(StrUtil.isNotBlank(storage.getStorageCode()), "storageCode 不能为空");

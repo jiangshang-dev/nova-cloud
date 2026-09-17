@@ -15,6 +15,11 @@ public interface FileStorageService {
 
     FileStorage getById(Long id);
 
+    FileStorage getByCode(String storageCode);
+
+    /** 兼容前端雪花 ID 精度丢失：优先按 id，找不到再按 storageCode */
+    FileStorage resolve(Long id, String storageCode);
+
     Long create(FileStorage storage);
 
     void update(FileStorage storage);
