@@ -23,7 +23,7 @@ CREATE TABLE `ai_model_provider` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_provider_code` (`tenant_id`, `provider_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI模型提供商表';
 
@@ -48,7 +48,7 @@ CREATE TABLE `ai_model` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_model_code` (`tenant_id`, `model_code`),
   KEY `idx_provider_id` (`provider_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI模型定义表';
@@ -75,7 +75,7 @@ CREATE TABLE `ai_agent` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_agent_code` (`tenant_id`, `agent_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI Agent定义表';
 
@@ -98,7 +98,7 @@ CREATE TABLE `ai_agent_session` (
   `is_deleted`        TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除：0否 1是',
   `gmt_create`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_agent_session` (`tenant_id`, `agent_id`, `session_id`),
   KEY `idx_tenant_user` (`tenant_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI Agent会话表';
@@ -117,7 +117,7 @@ CREATE TABLE `ai_agent_message` (
   `token_usage`     JSON                     DEFAULT NULL COMMENT 'token统计JSON',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_session_create` (`session_pk`, `gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI Agent消息表';
 
@@ -141,7 +141,7 @@ CREATE TABLE `ai_knowledge_base` (
   `remark`             VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_kb_code` (`tenant_id`, `kb_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='知识库表';
 
@@ -166,7 +166,7 @@ CREATE TABLE `ai_knowledge_doc` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_kb_id` (`kb_id`),
   KEY `idx_parse_status` (`parse_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='知识库文档表';
@@ -188,7 +188,7 @@ CREATE TABLE `ai_knowledge_chunk` (
   `is_deleted`      TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除：0否 1是',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_doc_chunk` (`doc_id`, `chunk_index`),
   KEY `idx_kb_id` (`kb_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='知识库分片表';
@@ -209,7 +209,7 @@ CREATE TABLE `ai_rag_query_log` (
   `latency_ms`       BIGINT UNSIGNED          DEFAULT NULL COMMENT '耗时，单位毫秒',
   `gmt_create`       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_kb_create` (`kb_id`, `gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='RAG问答日志表';
 
@@ -231,7 +231,7 @@ CREATE TABLE `ai_workflow` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_workflow_ver` (`tenant_id`, `workflow_code`, `version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI工作流定义表';
 
@@ -250,7 +250,7 @@ CREATE TABLE `ai_workflow_node` (
   `position_y`      INT                      DEFAULT NULL COMMENT '画布Y坐标',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_workflow_node` (`workflow_id`, `node_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI工作流节点表';
 
@@ -268,7 +268,7 @@ CREATE TABLE `ai_workflow_edge` (
   `config_json`     JSON                     DEFAULT NULL COMMENT '扩展配置JSON',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_workflow_edge` (`workflow_id`, `edge_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI工作流连线表';
 
@@ -290,7 +290,7 @@ CREATE TABLE `ai_workflow_run` (
   `create_by`       BIGINT UNSIGNED          DEFAULT NULL COMMENT '创建人',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_run_no` (`run_no`),
   KEY `idx_workflow_create` (`workflow_id`, `gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI工作流运行记录表';
@@ -315,7 +315,7 @@ CREATE TABLE `ai_media_task` (
   `create_by`       BIGINT UNSIGNED          DEFAULT NULL COMMENT '创建人',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_task_no` (`task_no`),
   KEY `idx_tenant_status_create` (`tenant_id`, `status`, `gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AI媒体生成任务表';

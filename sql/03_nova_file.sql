@@ -30,7 +30,7 @@ CREATE TABLE `file_storage` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_storage_code` (`tenant_id`, `storage_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文件存储配置表';
 
@@ -61,7 +61,7 @@ CREATE TABLE `file_info` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_tenant_md5` (`tenant_id`, `file_md5`),
   KEY `idx_tenant_biz` (`tenant_id`, `biz_type`, `biz_id`),
   KEY `idx_object_key` (`object_key`(191))
@@ -84,7 +84,7 @@ CREATE TABLE `file_chunk` (
   `status`          TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态：0待上传 1已上传',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_upload_chunk` (`upload_id`, `chunk_index`),
   KEY `idx_file_md5` (`file_md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文件分片表';

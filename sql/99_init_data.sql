@@ -28,11 +28,11 @@ VALUES
 
 -- 超级管理员（密码 admin123，BCrypt）
 INSERT INTO `sys_user`
-(`id`, `tenant_id`, `dept_id`, `username`, `password`, `nickname`, `real_name`, `user_type`, `status`, `is_deleted`, `remark`)
+(`id`, `tenant_id`, `dept_id`, `username`, `password`, `nickname`, `real_name`, `email`, `user_type`, `status`, `is_deleted`, `remark`)
 VALUES
 (1, 1, 100, 'admin',
  '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE/sLtTQzR6.6.',
- '超级管理员', '管理员', 9, 1, 0, '默认超管，请尽快修改密码');
+ '超级管理员', '管理员', 'admin@nova.local', 9, 1, 0, '默认超管，请尽快修改密码');
 
 -- 角色
 INSERT INTO `sys_role`

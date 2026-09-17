@@ -24,7 +24,7 @@ CREATE TABLE `search_index_meta` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_index_code` (`tenant_id`, `index_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='搜索索引元数据表';
 
@@ -47,7 +47,7 @@ CREATE TABLE `search_sync_task` (
   `end_time`        DATETIME                 DEFAULT NULL COMMENT '结束时间',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_task_no` (`task_no`),
   KEY `idx_index_create` (`index_id`, `gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='搜索同步任务表';
@@ -72,7 +72,7 @@ CREATE TABLE `job_definition` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_job_code` (`tenant_id`, `job_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='业务任务定义表';
 
@@ -92,7 +92,7 @@ CREATE TABLE `job_exec_log` (
   `result_msg`      VARCHAR(2000)            DEFAULT NULL COMMENT '结果摘要',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_job_create` (`job_id`, `gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='业务任务执行日志表';
 
@@ -116,7 +116,7 @@ CREATE TABLE `monitor_alert_rule` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_rule_code` (`tenant_id`, `rule_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='监控告警规则表';
 
@@ -136,6 +136,6 @@ CREATE TABLE `monitor_alert_record` (
   `resolved_time`   DATETIME                 DEFAULT NULL COMMENT '恢复时间',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_rule_fired` (`rule_id`, `fired_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='监控告警记录表';

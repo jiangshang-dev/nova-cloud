@@ -7,14 +7,17 @@
 | 条目 | 落地方式 |
 |------|----------|
 | 必备三字段 | `id` / `gmt_create` / `gmt_modified` |
-| 主键类型 | `BIGINT UNSIGNED`，应用侧雪花 ID |
+| 主键类型 | `BIGINT UNSIGNED`，应用侧雪花 ID（不用自增） |
+| 主键索引名 | `CONSTRAINT pk_id PRIMARY KEY (id)` |
 | 是/否字段 | `is_xxx` + `TINYINT UNSIGNED`（1是 0否） |
 | 非负字段 | `UNSIGNED` |
 | 索引命名 | 唯一 `uk_`，普通 `idx_` |
-| 禁止外键 | 全部逻辑关联，无 `FOREIGN KEY` |
+| 禁止外键 | 全部逻辑关联，无 `FOREIGN KEY` / `REFERENCES` |
+| 小数类型 | 禁止 `FLOAT`/`DOUBLE`，金额等用 `DECIMAL` |
+| 大字段 | 超长文本用 `TEXT`，不放索引 |
 | 字符集 | `utf8mb4` + `InnoDB` |
 | 注释 | 表、字段均有 `COMMENT` |
-| 表名 | 小写单数，`业务_作用` |
+| 表名 | 小写，`业务_作用` |
 
 ## 脚本清单
 

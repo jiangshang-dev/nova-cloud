@@ -29,7 +29,7 @@ CREATE TABLE `auth_client` (
   `remark`                        VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`                    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`                  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_client_id` (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='OAuth2客户端表';
 
@@ -45,7 +45,7 @@ CREATE TABLE `auth_consent` (
   `authorities`          VARCHAR(1000)   NOT NULL COMMENT '已授权范围',
   `gmt_create`           DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_client_principal` (`registered_client_id`, `principal_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='OAuth2授权同意表';
 
@@ -90,7 +90,7 @@ CREATE TABLE `auth_authorization` (
   `device_code_metadata`          TEXT                     COMMENT '设备码元数据',
   `gmt_create`                    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`                  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   UNIQUE KEY `uk_authorization_id` (`authorization_id`),
   KEY `idx_principal_name` (`principal_name`),
   KEY `idx_registered_client_id` (`registered_client_id`)

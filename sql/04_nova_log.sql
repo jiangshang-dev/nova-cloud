@@ -25,7 +25,7 @@ CREATE TABLE `log_login` (
   `login_time`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_tenant_username` (`tenant_id`, `username`),
   KEY `idx_login_time` (`login_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='登录日志表';
@@ -56,7 +56,7 @@ CREATE TABLE `log_operation` (
   `operate_time`     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
   `gmt_create`       DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_tenant_user` (`tenant_id`, `user_id`),
   KEY `idx_operate_time` (`operate_time`),
   KEY `idx_trace_id` (`trace_id`)
@@ -81,7 +81,7 @@ CREATE TABLE `log_audit` (
   `remark`          VARCHAR(500)             DEFAULT NULL COMMENT '备注',
   `gmt_create`      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  CONSTRAINT `pk_id` PRIMARY KEY (`id`),
   KEY `idx_tenant_biz` (`tenant_id`, `biz_type`, `biz_id`),
   KEY `idx_gmt_create` (`gmt_create`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='审计日志表';
