@@ -1,0 +1,62 @@
+# =========================================================
+# 本地备份配置（与 Nacos 中配置内容保持一致）
+# 复制到 Nacos：
+#   DataId   = nova-gateway-dev.yml
+#   Group    = DEFAULT_GROUP
+#   Namespace= nova-cloud
+#   格式     = YAML
+# =========================================================
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: nova-auth
+          uri: lb://nova-auth
+          predicates:
+            - Path=/auth/**,/oauth2/**,/.well-known/**
+        - id: nova-system
+          uri: lb://nova-system
+          predicates:
+            - Path=/system/**
+
+nova:
+  security:
+    jwt:
+      secret: NovaCloudJwtSecretKeyChangeMePlease32
+      expire-seconds: 7200
+      issuer: nova-cloud
+  gateway:
+    auth:
+      enabled: true
+      white-list:
+        - /auth/**
+        - /oauth2/**
+        - /.well-known/**
+        - /actuator/**
+        - /v3/api-docs/**
+        - /swagger-ui/**
+        - /swagger-ui.html
+  crypto:
+    # false=明文；true=请求/响应 SM4 加解密 + SM3 签名
+    enabled: false
+    sm4-key: NovaCloudSm4Key!
+    sm3-salt: NovaCloudSm3Salt
+    encrypt-header: X-Nova-Encrypt
+    sign-header: X-Nova-Sign
+    timestamp-header: X-Nova-Timestamp
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.nova: info
