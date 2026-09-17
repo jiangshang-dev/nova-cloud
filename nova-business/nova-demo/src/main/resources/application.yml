@@ -1,0 +1,25 @@
+# 仅保留注册中心 / 配置中心连接；业务配置见 application-dev.yml（可直接复制到 Nacos）
+# Nacos DataId: nova-demo-dev.yml  Group: DEFAULT_GROUP  Namespace: nova-cloud
+spring:
+  application:
+    name: nova-demo
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        enabled: true
+        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        group: DEFAULT_GROUP
+      config:
+        enabled: true
+        namespace: ${NACOS_NAMESPACE:nova-cloud}
+        group: DEFAULT_GROUP
+        file-extension: yml
+        refresh-enabled: true
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
