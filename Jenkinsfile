@@ -25,7 +25,7 @@ pipeline {
         stage('Maven打包') {
             steps {
                 sh '''
-                    mvn clean package -DskipTests
+                    mvn clean package -DskipTests -s /var/jenkins_home/.m2/settings.xml
                 '''
             }
         }
