@@ -33,9 +33,32 @@ pipeline {
         stage('Docker构建镜像') {
             steps {
                 sh '''
-                    docker build \
-                      -t nova-gateway:latest \
-                      ./nova-platform/nova-gateway
+                    docker build -t nova-nacos:latest ./nova-nacos
+                    docker build -t nova-gateway:latest ./nova-platform/nova-gateway
+                '''
+            }
+        }
+
+        stage('启动Nacos') {
+            steps {
+                sh '''
+                    docker rm -f nova-nacos || true
+
+                    docker run -d \
+                      --name nova-nacos \
+                      --restart=always \
+                      -p 8848:8848 \
+                      -p 8849:8849 \
+                      nova-nacos:latest
+                '''
+            }
+        }
+
+        stage('等待Nacos启动') {
+            steps {
+                sh '''
+                    echo "等待 Nacos 启动..."
+                    sleep 15
                 '''
             }
         }
