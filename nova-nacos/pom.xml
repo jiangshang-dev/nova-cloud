@@ -79,4 +79,24 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>maven-nexus</id>
+            <url>http://192.168.150.101:8081/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-nexus</id>
+            <url>http://192.168.150.101:8081/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>
