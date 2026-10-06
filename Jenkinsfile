@@ -2,17 +2,38 @@ pipeline {
     agent any
 
     stages {
-        stage('测试') {
+
+        stage('代码检出') {
             steps {
-                echo 'Jenkins Pipeline 启动成功'
+                echo 'nova-cloud 代码检出成功'
+                sh 'pwd'
+                sh 'git log -1 --oneline'
             }
         }
 
-        stage('查看代码') {
+        stage('Maven环境检查') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
+                sh 'java -version'
+                sh 'mvn -version'
             }
+        }
+
+        stage('Maven打包') {
+            steps {
+                sh '''
+                    mvn clean package -DskipTests
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'nova-cloud Maven 构建成功'
+        }
+
+        failure {
+            echo 'nova-cloud Maven 构建失败'
         }
     }
 }
