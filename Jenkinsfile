@@ -29,6 +29,31 @@ pipeline {
                 '''
             }
         }
+
+        stage('Docker构建镜像') {
+            steps {
+                sh '''
+                    docker build \
+                      -t nova-gateway:latest \
+                      ./nova-platform/nova-gateway
+                '''
+            }
+        }
+
+        stage('启动容器') {
+            steps {
+                sh '''
+                    docker rm -f nova-gateway || true
+
+                    docker run -d \
+                      --name nova-gateway \
+                      --restart=always \
+                      -p 8080:8080 \
+                      nova-gateway:latest
+                '''
+            }
+        }
+
     }
 
     post {
